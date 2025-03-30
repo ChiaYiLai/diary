@@ -1,5 +1,9 @@
 # Local Diary
 
+## Privacy
+
+- Stored locally, no login required
+
 ## Fast
 
 - Minimalist design, loads all diaries at once
