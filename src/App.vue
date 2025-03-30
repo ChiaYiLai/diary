@@ -6,17 +6,30 @@ import Settings from './components/Settings.vue'
 import About from './components/About.vue'
 import { useMainStore } from './stores/mainStore'
 
-const allDiaries = ref<any[]>([])
+interface Birthday {
+    name: string
+    birthday: string
+}
+interface Diary {
+    date: string
+    diary: string
+}
+
+const allDiaries = ref<Diary[]>([])
 const dateActive = ref(dayjs(new Date()).format('YYYY-MM-DD'))
 const diaryActive = ref(localStorage.getItem(dateActive.value) || '')
 const dateRefs = ref(new Map())
 const scrollContainer = ref(null)
 const isEditBirthday = ref(false)
-const newBirthday = ref({})
+const newBirthday = ref<Birthday>({
+    name: '',
+    birthday: ''
+})
+const birthdays = ref<Birthday[]>(
+    JSON.parse(localStorage.getItem('birthdays') ?? '[]')
+)
 
 let saveTimer: ReturnType<typeof setTimeout> | null = null
-
-const birthdays = ref(JSON.parse(localStorage.getItem('birthdays')) || [])
 
 watch(dateActive, async (newDate) => {
     await nextTick()
@@ -60,12 +73,12 @@ const ages = computed(() => {
 })
 
 const loadDiaries = () => {
-    const diaries: any[] = []
+    const diaries: Diary[] = []
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i)
-        if (/^\d{4}-\d{2}-\d{2}$/.test(key)) {
+        if (key && /^\d{4}-\d{2}-\d{2}$/.test(key)) {
             const diary = localStorage.getItem(key)
-            if (key && diary) {
+            if (diary !== null) {
                 diaries.push({ date: key, diary: diary })
             }
         }
@@ -73,12 +86,7 @@ const loadDiaries = () => {
     sortDiaries(diaries)
     allDiaries.value = diaries
 }
-
-onMounted(() => {
-    loadDiaries()
-    dateRefs.value = new Map()
-})
-const sortDiaries = (diaries) => {
+const sortDiaries = (diaries: Diary[]) => {
     diaries.sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     )
@@ -99,7 +107,9 @@ const changeDiary = () => {
 const saveDiary = () => {
     localStorage.setItem(dateActive.value, diaryActive.value)
     let newAllDiaries = JSON.parse(JSON.stringify(allDiaries.value))
-    const target = newAllDiaries.find((item) => item.date === dateActive.value)
+    const target = newAllDiaries.find(
+        (item: Diary) => item.date === dateActive.value
+    )
     if (target) {
         target.diary = diaryActive.value
     } else {
@@ -128,7 +138,7 @@ const deleteDiary = () => {
 const addBirthday = () => {
     birthdays.value.push(newBirthday.value)
     saveBirthday()
-    newBirthday.value = {}
+    newBirthday.value = { name: '', birthday: '' }
 }
 const saveBirthday = () => {
     localStorage.setItem('birthdays', JSON.stringify(birthdays.value))
@@ -137,6 +147,11 @@ const finishEditBirthday = () => {
     isEditBirthday.value = false
     saveBirthday()
 }
+
+onMounted(() => {
+    loadDiaries()
+    dateRefs.value = new Map()
+})
 </script>
 
 <template lang="pug">

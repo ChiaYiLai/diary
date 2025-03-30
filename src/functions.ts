@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-const calcAge = (birthday, referenceDate) => {
+const calcAge = (birthday: string, referenceDate: string) => {
     const birth = dayjs(birthday)
     const reference = dayjs(referenceDate)
     const isNotBorn = reference < birth
