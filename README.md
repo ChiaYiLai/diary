@@ -1,5 +1,17 @@
-# Vue 3 + TypeScript + Vite
+# Local Diary
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Fast
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+- Minimalist design, loads all diaries at once
+
+## Backup
+
+- Can export files for backup, import to other devices
+
+## Birthday
+
+- Can display someone's age on the current day
+
+## History
+
+- Can display diaries from the same day in other years
