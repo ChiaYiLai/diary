@@ -186,8 +186,8 @@ onMounted(() => {
                 ul.list-ages(v-else)
                     li(v-for="item in ages" :key="item.name")
                         h3 {{ item.name }}
-                        p(v-if="item.isNotBorn") born {{ item.years }} y {{ item.months }} m {{ item.days }} d after
-                        p(v-else) {{ item.years }} y {{ item.months }} m {{ item.days }} d old
+                        p(v-if="item.isNotBorn") - {{ item.years }} y {{ item.months }} m {{ item.days }} d
+                        p(v-else) {{ item.years }} y {{ item.months }} m {{ item.days }} d 
                 button(v-if="isEditBirthday" type="button" @click="finishEditBirthday()") Done
                 div(v-else type="button" @click="isEditBirthday = true")
                     img.icon(src="/edit.svg" alt="Edit" :title="Edit")
