@@ -1,15 +1,22 @@
+@use 'global' as *
+
 .list-same-days
     list-style: none
-    padding: 0
+    padding: 2rem
     margin: 0
     display: flex
     flex-direction: column
     gap: 1rem
     h3
-        font-size: 16px
+        font-size: 12px
+        color: rgba(255, 255, 255, .6)
         margin-bottom: .25rem
+        +sm
+            font-size: 15px
     p
-        font-size: 16px
+        font-size: 13px
+        +sm
+            font-size: 16px
 
 .list-diaries
     list-style: none
@@ -34,13 +41,14 @@
         text-overflow: ellipsis
 
 .box-ages
-    background-color: #222
-    border: 1px solid #666
-    padding: 1rem 1.25rem
-    border-radius: 2px
+    border-top: 1px solid rgba(255, 255, 255, .2)
+    padding: 1rem 2rem
     display: flex
     justify-content: space-between
     align-items: center
+    width: 100%
+    overflow: auto
+    box-sizing: border-box
 
 .list-birthdays
     display: flex
@@ -57,6 +65,9 @@
     padding: 0
     margin: 0
     gap: 2rem
+    p
+        font-size: 10px
+        letter-spacing: 1px
 
 .list-about
     display: flex

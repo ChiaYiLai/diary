@@ -27,6 +27,7 @@ const restoreLocalStorage = (event: Event) => {
             Object.keys(data).forEach((key) => {
                 localStorage.setItem(key, data[key])
             })
+            location.reload()
         } catch (error) {}
     }
     reader.readAsText(file)

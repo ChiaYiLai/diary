@@ -1,0 +1,35 @@
+@use "sass:color"
+
+$gray-dark: #333
+$gray: #666
+$gray-light: #999
+$gray-ultra-light: #eee
+
+$main: #47c
+$main-dark: color.scale($main, $lightness: -10%)
+$red: #e55
+$green: #3a6
+$orange: #e82
+$purple: #947
+
+$tag: $purple
+
+$border: rgba(0, 0, 0, .15)
+$radius: 2px
+$danger: $purple
+
+=xs
+	@media (max-width: 575px)
+		@content
+=sm
+	@media (min-width: 576px)
+		@content
+=md
+	@media (min-width: 768px)
+		@content
+=lg
+	@media (min-width: 992px)
+		@content
+=xl
+	@media (min-width: 1200px)
+		@content

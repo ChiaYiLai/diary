@@ -1,3 +1,5 @@
+@use 'global' as *
+
 button
     background-color: #000
     border: 1px solid #666
@@ -14,12 +16,14 @@ button
 input
     border: 1px solid rgba(255, 255, 255, .2)
     border-radius: 4px
-    font-size: 24px
+    font-size: 16px
     padding: 4px 12px
     background-color: transparent
     color: #ccc
     font-family: "Montserrat", sans-serif
     transition: .4s
+    +sm
+        font-size: 24px
     &:hover
         border-color: rgba(255, 255, 255, .8)
         color: #fff

@@ -21,6 +21,7 @@ const diaryActive = ref(localStorage.getItem(dateActive.value) || '')
 const dateRefs = ref(new Map())
 const scrollContainer = ref(null)
 const isEditBirthday = ref(false)
+const isDiaryList = ref(false)
 const newBirthday = ref<Birthday>({
     name: '',
     birthday: ''
@@ -99,6 +100,7 @@ const getDay = (date: string) => {
 }
 const handleDate = (date: string) => {
     dateActive.value = date
+    isDiaryList.value = false
     changeDiary()
 }
 const changeDiary = () => {
@@ -156,24 +158,33 @@ onMounted(() => {
 
 <template lang="pug">
     header.header-main
+        .left(@click="isDiaryList = !isDiaryList")
+            img.icon(src="/menu.svg" alt="Diary List" title="Diary List")
         h1(@click="useMainStore().isAbout = true")
             img(src="/favicon.svg" alt="Diary Logo")
             span Local Diary
         .right(@click="useMainStore().isSettings = true")
-            img.icon(src="/settings.svg" alt="Settings" :title="Settings")
+            img.icon(src="/settings.svg" alt="Settings" title="Settings")
     main.main-main
-        .left(ref="scrollContainer")
+        .left(ref="scrollContainer" :class="{ 'active': isDiaryList }")
             ul.list-diaries
                 li(v-for="item in allDiaries" :key="item.date" @click="handleDate(item.date)" :class="{ active: item.date === dateActive }")
                     h3(:ref="el => dateRefs.set(item.date, el)" :data-date="item.date") {{ item.date }} {{ getDay(item.date) }}
                     p {{ item.diary }}
         .center
             .date
-                button.prev-day(type="button" @click="handleDate(prevDay)") {{ prevDay }}
+                .prev-day(@click="handleDate(prevDay)" :title="prevDay")
+                    img(src="/left.svg" alt="Previous Day")
                 input.date-active(type="date" v-model="dateActive" @change="changeDiary")
                 .day-active {{ getDay(dateActive) }}
-                button.next-day(type="button" @click="handleDate(nextDay)") {{ nextDay }}
-                img.icon(src="/delete.svg" alt="delete" title="delete" @click="deleteDiary" v-if="hasDiary")
+                .next-day(@click="handleDate(nextDay)" :title="nextDay")
+                    img(src="/left.svg" alt="Next Day")
+                img.icon(src="/delete.svg" alt="delete" title="delete" @click="deleteDiary" v-if="hasDiary")   
+            textarea.diary-active(placeholder="Write your diary here" @input="handleSaveDiary" v-model="diaryActive")
+            ul.list-same-days
+                li(v-for="item in sameDays" :key="item.date" @click="handleDate(item.date)")
+                    h3 {{ item.date }} {{ getDay(item.date) }}
+                    p {{ item.diary }}
             .box-ages(v-if="useMainStore().isAge")
                 ul.list-birthdays(v-if="isEditBirthday")
                     li(v-for="item in birthdays" :key="item.name")
@@ -186,19 +197,13 @@ onMounted(() => {
                 ul.list-ages(v-else)
                     li(v-for="item in ages" :key="item.name")
                         h3 {{ item.name }}
-                        p(v-if="item.isNotBorn") - {{ item.years }} y {{ item.months }} m {{ item.days }} d
-                        p(v-else) {{ item.years }} y {{ item.months }} m {{ item.days }} d 
+                        p(v-if="item.isNotBorn") -{{ item.years }}y{{ item.months }}m{{ item.days }}d
+                        p(v-else) {{ item.years }}y{{ item.months }}m{{ item.days }}d 
                 button(v-if="isEditBirthday" type="button" @click="finishEditBirthday()") Done
-                div(v-else type="button" @click="isEditBirthday = true")
+                div(v-else @click="isEditBirthday = true")
                     img.icon(src="/edit.svg" alt="Edit" :title="Edit")
-                
-            textarea.diary-active(placeholder="Write your diary here" @input="handleSaveDiary" v-model="diaryActive")
-            ul.list-same-days
-                li(v-for="item in sameDays" :key="item.date" @click="handleDate(item.date)")
-                    h3 {{ item.date }} {{ getDay(item.date) }}
-                    p {{ item.diary }}
     footer.footer-main
-        a(href="https://github.com/ChiaYiLai" target="_blank")
+        a(href="https://chiayilai.github.io/resume/" target="_blank")
             address Developed by Chia Yi Lai
     Settings
     About
