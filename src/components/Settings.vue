@@ -42,13 +42,13 @@ const triggerFileInput = () => {
     .modal-content(@click.stop)
         h2 Settings
         ul.list-settings
-            li
-                label Backup
-                button(@click="backupLocalStorage") Backup
-            li
-                label Import
-                button(@click="triggerFileInput") Import
-                input(type="file" ref="fileInput" @change="restoreLocalStorage" accept="application/json" style="display: none")
+            //- li
+            //-     label Backup
+            //-     button(@click="backupLocalStorage") Backup
+            //- li
+            //-     label Import
+            //-     button(@click="triggerFileInput") Import
+            //-     input(type="file" ref="fileInput" @change="restoreLocalStorage" accept="application/json" style="display: none")
             li
                 label Show Ages
                 button(@click="useMainStore().isAge = !useMainStore().isAge") {{ useMainStore().isAge ? 'Close' : 'Open' }}
