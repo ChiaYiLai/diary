@@ -83,6 +83,22 @@ const ages = computed(() => {
     })
 })
 
+const checkBrowser = async () => {
+    try {
+        if (!('showOpenFilePicker' in window)) {
+            throw new Error(
+                '您的瀏覽器不支援 File System Access API，請使用最新版的 Chrome 或 Edge 瀏覽器'
+            )
+        }
+    } catch (error) {
+        if (error instanceof Error) {
+            alert(error.message)
+        } else {
+            alert(String(error))
+        }
+    }
+}
+
 const loadDiary = async () => {
     try {
         const [handle] = await window.showOpenFilePicker({
@@ -129,26 +145,11 @@ const loadDiary = async () => {
             alert('檔案格式錯誤，無法載入日記資料')
         }
     } catch (err) {
-        // 用戶取消檔案選擇或發生錯誤
         console.error('開啟檔案失敗:', err)
-        // 不要自動嘗試創建新檔案，避免連鎖觸發另一個檔案選擇器
         alert('開啟檔案失敗，請重新嘗試')
     }
 }
 
-const checkBrowser = async () => {
-    try {
-        if (!('showOpenFilePicker' in window)) {
-            throw new Error(
-                '您的瀏覽器不支援 File System Access API，請使用最新版的 Chrome 或 Edge 瀏覽器'
-            )
-        }
-    } catch (error) {
-        alert(error.message)
-    }
-}
-
-// 創建新檔案
 const createDiary = async () => {
     try {
         fileHandle.value = await window.showSaveFilePicker({
@@ -160,87 +161,22 @@ const createDiary = async () => {
             ],
             suggestedName: 'diary.json'
         })
-
         const emptyData: DiaryData = {
             diaries: [],
             birthdays: []
         }
-
         allDiaries.value = []
         birthdays.value = []
         await saveDataToFile(emptyData)
         isFileLoaded.value = true
-
-        saveFileReference()
     } catch (err) {
         console.error('創建新檔案失敗:', err)
-        if (err.name !== 'AbortError') {
-            alert('創建檔案失敗: ' + err.message)
-        }
     }
 }
 
-// 從檔案載入日記資料
-// const loadDiariesFromFile = async () => {
-//     if (!fileHandle.value) return
-//     try {
-//         if (
-//             (await fileHandle.value.queryPermission({ mode: 'read' })) !==
-//             'granted'
-//         ) {
-//             if (
-//                 (await fileHandle.value.requestPermission({ mode: 'read' })) !==
-//                 'granted'
-//             ) {
-//                 throw new Error('讀取權限未獲授予')
-//             }
-//         }
-//         const file = await fileHandle.value.getFile()
-//         const contents = await file.text()
-//         try {
-//             const data: DiaryData = JSON.parse(contents)
-//             if (Array.isArray(data.diaries)) {
-//                 sortDiaries(data.diaries)
-//                 allDiaries.value = data.diaries
-//             } else {
-//                 allDiaries.value = []
-//             }
-//             if (Array.isArray(data.birthdays)) {
-//                 birthdays.value = data.birthdays
-//             } else {
-//                 birthdays.value = []
-//             }
-//             changeDiary()
-//             isFileLoaded.value = true
-//         } catch (parseErr) {
-//             console.error('解析 JSON 失敗:', parseErr)
-//             alert('檔案格式錯誤，無法載入日記資料')
-//         }
-//     } catch (err) {
-//         console.error('讀取檔案失敗:', err)
-//         alert('讀取檔案失敗')
-//     }
-// }
-
-// 簡單記錄檔案路徑（而非實際的檔案句柄）
-const saveFileReference = async () => {
-    if (!fileHandle.value) return
-
-    try {
-        // 只存儲檔案名稱作為參考
-        const file = await fileHandle.value.getFile()
-        localStorage.setItem('diaryFilePath', file.name)
-    } catch (err) {
-        console.error('保存檔案參考失敗:', err)
-    }
-}
-
-// 將資料寫入檔案
 const saveDataToFile = async (data: DiaryData) => {
     if (!fileHandle.value) return
-
     try {
-        // 請求寫入權限
         if (
             (await fileHandle.value.queryPermission({ mode: 'readwrite' })) !==
             'granted'
@@ -253,14 +189,8 @@ const saveDataToFile = async (data: DiaryData) => {
                 throw new Error('寫入權限未獲授予')
             }
         }
-
-        // 創建寫入流
         const writable = await fileHandle.value.createWritable()
-
-        // 寫入資料
         await writable.write(JSON.stringify(data, null, 2))
-
-        // 關閉寫入流
         await writable.close()
     } catch (err) {
         console.error('寫入檔案失敗:', err)
@@ -296,11 +226,9 @@ const changeDiary = () => {
 
 const saveDiary = async () => {
     if (!isFileLoaded.value) {
-        alert('請先開啟或創建日記檔案')
-        return
+        return alert('請先開啟或創建日記檔案')
     }
 
-    // 更新或新增日記
     let updated = false
     for (let i = 0; i < allDiaries.value.length; i++) {
         if (allDiaries.value[i].date === dateActive.value) {
@@ -318,7 +246,6 @@ const saveDiary = async () => {
         sortDiaries(allDiaries.value)
     }
 
-    // 儲存到檔案
     const dataToSave: DiaryData = {
         diaries: allDiaries.value,
         birthdays: birthdays.value
@@ -344,11 +271,9 @@ const deleteDiary = async () => {
         (item) => item.date !== dateActive.value
     )
 
-    // 切換到今天的日期
     dateActive.value = dayjs(new Date()).format('YYYY-MM-DD')
     changeDiary()
 
-    // 儲存變更
     const dataToSave: DiaryData = {
         diaries: allDiaries.value,
         birthdays: birthdays.value
@@ -432,7 +357,7 @@ onMounted(() => {
                         p(v-else) {{ item.years }}y{{ item.months }}m{{ item.days }}d 
                 button(v-if="isEditBirthday" type="button" @click="finishEditBirthday()") Done
                 div(v-else @click="isEditBirthday = true")
-                    img.icon(src="/edit.svg" alt="Edit" :title="Edit")
+                    img.icon(src="/edit.svg" alt="Edit" title="Edit")
     footer.footer-main
         a(href="https://chiayilai.github.io/resume/" target="_blank")
             address Developed by Chia Yi Lai
