@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useMainStore } from '../stores/mainStore'
 const props = defineProps<{
+    isBrowserSupport: boolean
     isFileLoaded: boolean
     loadDiary: () => void
     createDiary: () => void
@@ -9,7 +10,9 @@ const props = defineProps<{
 </script>
 
 <template lang="pug">
-.modal.modal-init(v-if="!props.isFileLoaded")
+.modal.modal-unsupport(v-if="!isBrowserSupport")
+    p.text-gradient Oops! Your browser doesn’t support this feature. Please switch to Chrome on a desktop for the best experience.
+.modal.modal-init(v-else-if="!props.isFileLoaded")
     .modal-content
         h2 Load or Create Diary
         ul.list-btns

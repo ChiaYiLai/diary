@@ -6,7 +6,7 @@ import { useMainStore } from '../stores/mainStore'
 <template lang="pug">
 .modal.modal-about(v-if="useMainStore().isAbout" @click="useMainStore().isAbout = false")
     .modal-content(@click.stop)
-        h2#text-logo About Local Diary
+        h1.text-gradient About Local Diary
         ul.list-about
             li
                 h3 Privacy

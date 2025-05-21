@@ -7,6 +7,13 @@ import About from './components/About.vue'
 import Init from './components/Init.vue'
 import { useMainStore } from './stores/mainStore'
 
+const fileTypes = [
+    {
+        description: 'JSON Files',
+        accept: { 'application/json': ['.json'] }
+    }
+]
+
 interface Birthday {
     name: string
     birthday: string
@@ -21,6 +28,7 @@ interface DiaryData {
 }
 
 // 檔案處理相關變數
+const isBrowserSupport = ref(false)
 const fileHandle = ref<FileSystemFileHandle | null>(null)
 const isFileLoaded = ref(false)
 
@@ -84,45 +92,17 @@ const ages = computed(() => {
 })
 
 const checkBrowser = async () => {
-    try {
-        if (!('showOpenFilePicker' in window)) {
-            throw new Error(
-                '您的瀏覽器不支援 File System Access API，請使用最新版的 Chrome 或 Edge 瀏覽器'
-            )
-        }
-    } catch (error) {
-        if (error instanceof Error) {
-            alert(error.message)
-        } else {
-            alert(String(error))
-        }
-    }
+    if ('showOpenFilePicker' in window) isBrowserSupport.value = true
 }
 
 const loadDiary = async () => {
     try {
         const [handle] = await window.showOpenFilePicker({
-            types: [
-                {
-                    description: 'JSON Files',
-                    accept: { 'application/json': ['.json'] }
-                }
-            ],
+            types: fileTypes,
             excludeAcceptAllOption: true,
             multiple: false
         })
         fileHandle.value = handle
-        if (
-            (await fileHandle.value.queryPermission({ mode: 'read' })) !==
-            'granted'
-        ) {
-            if (
-                (await fileHandle.value.requestPermission({ mode: 'read' })) !==
-                'granted'
-            ) {
-                throw new Error('讀取權限未獲授予')
-            }
-        }
         const file = await fileHandle.value.getFile()
         const contents = await file.text()
         try {
@@ -153,13 +133,9 @@ const loadDiary = async () => {
 const createDiary = async () => {
     try {
         fileHandle.value = await window.showSaveFilePicker({
-            types: [
-                {
-                    description: 'JSON Files',
-                    accept: { 'application/json': ['.json'] }
-                }
-            ],
-            suggestedName: 'diary.json'
+            types: fileTypes,
+            suggestedName: 'diary.json',
+            startIn: 'documents'
         })
         const emptyData: DiaryData = {
             diaries: [],
@@ -175,20 +151,7 @@ const createDiary = async () => {
 }
 
 const saveDataToFile = async (data: DiaryData) => {
-    if (!fileHandle.value) return
     try {
-        if (
-            (await fileHandle.value.queryPermission({ mode: 'readwrite' })) !==
-            'granted'
-        ) {
-            if (
-                (await fileHandle.value.requestPermission({
-                    mode: 'readwrite'
-                })) !== 'granted'
-            ) {
-                throw new Error('寫入權限未獲授予')
-            }
-        }
         const writable = await fileHandle.value.createWritable()
         await writable.write(JSON.stringify(data, null, 2))
         await writable.close()
@@ -225,10 +188,6 @@ const changeDiary = () => {
 }
 
 const saveDiary = async () => {
-    if (!isFileLoaded.value) {
-        return alert('請先開啟或創建日記檔案')
-    }
-
     let updated = false
     for (let i = 0; i < allDiaries.value.length; i++) {
         if (allDiaries.value[i].date === dateActive.value) {
@@ -260,8 +219,6 @@ const handleSaveDiary = () => {
 }
 
 const deleteDiary = async () => {
-    if (!isFileLoaded.value) return
-
     const isConfirmed = window.confirm(
         `確定要刪除 ${dateActive.value} 的日記嗎？`
     )
@@ -283,16 +240,12 @@ const deleteDiary = async () => {
 }
 
 const addBirthday = async () => {
-    if (!isFileLoaded.value) return
-
     birthdays.value.push(newBirthday.value)
     await saveBirthday()
     newBirthday.value = { name: '', birthday: '' }
 }
 
 const saveBirthday = async () => {
-    if (!isFileLoaded.value) return
-
     const dataToSave: DiaryData = {
         diaries: allDiaries.value,
         birthdays: birthdays.value
@@ -363,7 +316,7 @@ onMounted(() => {
             address Developed by Chia Yi Lai
     Settings
     About
-    Init(:isFileLoaded="isFileLoaded" :createDiary="createDiary" :loadDiary="loadDiary")
+    Init(:isFileLoaded="isFileLoaded" :createDiary="createDiary" :loadDiary="loadDiary" :isBrowserSupport="isBrowserSupport")
 </template>
 
 <style scoped lang="sass"></style>
