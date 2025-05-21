@@ -245,12 +245,16 @@ const addBirthday = async () => {
     newBirthday.value = { name: '', birthday: '' }
 }
 
+const deleteBirthday = async (index) => {
+    birthdays.value.splice(index, 1)
+    await saveBirthday()
+}
+
 const saveBirthday = async () => {
     const dataToSave: DiaryData = {
         diaries: allDiaries.value,
         birthdays: birthdays.value
     }
-
     await saveDataToFile(dataToSave)
 }
 
@@ -268,12 +272,12 @@ onMounted(() => {
 <template lang="pug">
     header.header-main
         .left(@click="isDiaryList = !isDiaryList")
-            img.icon(src="/menu.svg" alt="Diary List" title="Diary List")
+            span.material-symbols-rounded notes
         h1(@click="useMainStore().isAbout = true")
             img(src="/favicon.svg" alt="Diary Logo")
             span Local Diary
         .right(@click="useMainStore().isSettings = true")
-            img.icon(src="/settings.svg" alt="Settings" title="Settings")
+            span.material-symbols-rounded settings
     main.main-main
         .left(ref="scrollContainer" :class="{ 'active': isDiaryList }")
             ul.list-diaries
@@ -283,12 +287,12 @@ onMounted(() => {
         .center
             .date
                 .prev-day(@click="handleDate(prevDay)" :title="prevDay")
-                    img(src="/left.svg" alt="Previous Day")
+                    span.material-symbols-rounded arrow_back
                 input.date-active(type="date" v-model="dateActive" @change="changeDiary")
                 .day-active {{ getDay(dateActive) }}
                 .next-day(@click="handleDate(nextDay)" :title="nextDay")
-                    img(src="/left.svg" alt="Next Day")
-                img.icon(src="/delete.svg" alt="delete" title="delete" @click="deleteDiary" v-if="hasDiary")   
+                    span.material-symbols-rounded arrow_forward
+                span.delete.material-symbols-rounded(@click="deleteDiary" v-if="hasDiary") delete 
             textarea.diary-active(placeholder="Write your diary here" @input="handleSaveDiary" v-model="diaryActive" :disabled="!isFileLoaded")
             ul.list-same-days
                 li(v-for="item in sameDays" :key="item.date" @click="handleDate(item.date)")
@@ -296,13 +300,14 @@ onMounted(() => {
                     p {{ item.diary }}
             .box-ages(v-if="useMainStore().isAge")
                 ul.list-birthdays(v-if="isEditBirthday")
-                    li(v-for="item in birthdays" :key="item.name")
+                    li(v-for="(item, index) in birthdays" :key="item.name")
                         input(v-model="item.name")
                         input(type="date" v-model="item.birthday")
+                        span.material-symbols-rounded(@click="deleteBirthday(index)") delete
                     li
                         input(v-model="newBirthday.name" placeholder="Name")
                         input(type="date" v-model="newBirthday.birthday")
-                        button(type="button" @click="addBirthday") Add
+                        span.material-symbols-rounded(@click="addBirthday") add_circle
                 ul.list-ages(v-else)
                     li(v-for="item in ages" :key="item.name")
                         h3 {{ item.name }}
@@ -310,10 +315,7 @@ onMounted(() => {
                         p(v-else) {{ item.years }}y{{ item.months }}m{{ item.days }}d 
                 button(v-if="isEditBirthday" type="button" @click="finishEditBirthday()") Done
                 div(v-else @click="isEditBirthday = true")
-                    img.icon(src="/edit.svg" alt="Edit" title="Edit")
-    footer.footer-main
-        a(href="https://chiayilai.github.io/resume/" target="_blank")
-            address Developed by Chia Yi Lai
+                    span.material-symbols-rounded edit
     Settings
     About
     Init(:isFileLoaded="isFileLoaded" :createDiary="createDiary" :loadDiary="loadDiary" :isBrowserSupport="isBrowserSupport")

@@ -22,6 +22,9 @@ import { useMainStore } from '../stores/mainStore'
             li
                 h3 History
                 p Show diaries from the same day in other years
+        footer.footer-about
+            a(href="https://chiayilai.github.io/resume/" target="_blank")
+                address Developed by Chia Yi Lai
 </template>
 
 <style scoped lang="sass"></style>
