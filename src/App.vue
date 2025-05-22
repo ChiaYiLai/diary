@@ -6,8 +6,8 @@ import Settings from './components/Settings.vue'
 import About from './components/About.vue'
 import Init from './components/Init.vue'
 import { useMainStore } from './stores/mainStore'
-
-const fileTypes = [
+const main = useMainStore()
+const fileTypes: FilePickerAcceptType[] = [
     {
         description: 'JSON Files',
         accept: { 'application/json': ['.json'] }
@@ -151,6 +151,10 @@ const createDiary = async () => {
 }
 
 const saveDataToFile = async (data: DiaryData) => {
+    if (!fileHandle.value) {
+        alert('請先選擇一個檔案')
+        return
+    }
     try {
         const writable = await fileHandle.value.createWritable()
         await writable.write(JSON.stringify(data, null, 2))
@@ -218,34 +222,13 @@ const handleSaveDiary = () => {
     saveTimer = setTimeout(saveDiary, 500)
 }
 
-const deleteDiary = async () => {
-    const isConfirmed = window.confirm(
-        `確定要刪除 ${dateActive.value} 的日記嗎？`
-    )
-    if (!isConfirmed) return
-
-    allDiaries.value = allDiaries.value.filter(
-        (item) => item.date !== dateActive.value
-    )
-
-    dateActive.value = dayjs(new Date()).format('YYYY-MM-DD')
-    changeDiary()
-
-    const dataToSave: DiaryData = {
-        diaries: allDiaries.value,
-        birthdays: birthdays.value
-    }
-
-    await saveDataToFile(dataToSave)
-}
-
 const addBirthday = async () => {
     birthdays.value.push(newBirthday.value)
     await saveBirthday()
     newBirthday.value = { name: '', birthday: '' }
 }
 
-const deleteBirthday = async (index) => {
+const deleteBirthday = async (index: number) => {
     birthdays.value.splice(index, 1)
     await saveBirthday()
 }
@@ -266,59 +249,61 @@ const finishEditBirthday = async () => {
 onMounted(() => {
     dateRefs.value = new Map()
     checkBrowser()
+    document.documentElement.setAttribute(
+        'data-theme',
+        localStorage.getItem('theme') || 'dark'
+    )
 })
 </script>
 
 <template lang="pug">
-    header.header-main
-        .left(@click="isDiaryList = !isDiaryList")
-            span.material-symbols-rounded notes
-        h1(@click="useMainStore().isAbout = true")
-            img(src="/favicon.svg" alt="Diary Logo")
-            span Local Diary
-        .right(@click="useMainStore().isSettings = true")
-            span.material-symbols-rounded settings
-    main.main-main
-        .left(ref="scrollContainer" :class="{ 'active': isDiaryList }")
-            ul.list-diaries
-                li(v-for="item in allDiaries" :key="item.date" @click="handleDate(item.date)" :class="{ active: item.date === dateActive }")
-                    h3(:ref="el => dateRefs.set(item.date, el)" :data-date="item.date") {{ item.date }} {{ getDay(item.date) }}
-                    p {{ item.diary }}
-        .center
-            .date
-                .prev-day(@click="handleDate(prevDay)" :title="prevDay")
-                    span.material-symbols-rounded arrow_back
-                input.date-active(type="date" v-model="dateActive" @change="changeDiary")
-                .day-active {{ getDay(dateActive) }}
-                .next-day(@click="handleDate(nextDay)" :title="nextDay")
-                    span.material-symbols-rounded arrow_forward
-                span.delete.material-symbols-rounded(@click="deleteDiary" v-if="hasDiary") delete 
-            textarea.diary-active(placeholder="Write your diary here" @input="handleSaveDiary" v-model="diaryActive" :disabled="!isFileLoaded")
-            ul.list-same-days
-                li(v-for="item in sameDays" :key="item.date" @click="handleDate(item.date)")
-                    h3 {{ item.date }} {{ getDay(item.date) }}
-                    p {{ item.diary }}
-            .box-ages(v-if="useMainStore().isAge")
-                ul.list-birthdays(v-if="isEditBirthday")
-                    li(v-for="(item, index) in birthdays" :key="item.name")
-                        input(v-model="item.name")
-                        input(type="date" v-model="item.birthday")
-                        span.material-symbols-rounded(@click="deleteBirthday(index)") delete
-                    li
-                        input(v-model="newBirthday.name" placeholder="Name")
-                        input(type="date" v-model="newBirthday.birthday")
-                        span.material-symbols-rounded(@click="addBirthday") add_circle
-                ul.list-ages(v-else)
-                    li(v-for="item in ages" :key="item.name")
-                        h3 {{ item.name }}
-                        p(v-if="item.isNotBorn") -{{ item.years }}y{{ item.months }}m{{ item.days }}d
-                        p(v-else) {{ item.years }}y{{ item.months }}m{{ item.days }}d 
-                button(v-if="isEditBirthday" type="button" @click="finishEditBirthday()") Done
-                div(v-else @click="isEditBirthday = true")
-                    span.material-symbols-rounded edit
-    Settings
-    About
-    Init(:isFileLoaded="isFileLoaded" :createDiary="createDiary" :loadDiary="loadDiary" :isBrowserSupport="isBrowserSupport")
+    .app(:class="main.isReadMode ? 'read-mode' : 'edit-mode'")
+        header.header-main
+            .left(@click="isDiaryList = !isDiaryList")
+                span.material-symbols-rounded notes
+            h1(@click="main.isAbout = true") {{ main.diaryTitle }}
+            .right(@click="main.isSettings = true")
+                span.material-symbols-rounded more_horiz
+        main.main-main
+            .left(ref="scrollContainer" :class="{ 'active': isDiaryList }")
+                ul.list-diaries
+                    li(v-for="item in allDiaries" :key="item.date" @click="handleDate(item.date)" :class="{ active: item.date === dateActive }")
+                        h3(:ref="el => dateRefs.set(item.date, el)" :data-date="item.date") {{ item.date }} {{ getDay(item.date) }}
+                        p {{ item.diary }}
+            .center
+                .date
+                    .prev-day(@click="handleDate(prevDay)" :title="prevDay")
+                        span.material-symbols-rounded expand_circle_right
+                    input.date-active(type="date" v-model="dateActive" @change="changeDiary")
+                    .day-active {{ getDay(dateActive) }}
+                    .next-day(@click="handleDate(nextDay)" :title="nextDay")
+                        span.material-symbols-rounded expand_circle_right
+                textarea.diary-active(placeholder="Write your diary here" @input="handleSaveDiary" v-model="diaryActive" :disabled="!isFileLoaded")
+                ul.list-same-days
+                    li(v-for="item in sameDays" :key="item.date" @click="handleDate(item.date)")
+                        h3 {{ item.date }} {{ getDay(item.date) }}
+                        p {{ item.diary }}
+                .box-ages(v-if="main.isAge")
+                    ul.list-birthdays(v-if="isEditBirthday")
+                        li(v-for="(item, index) in birthdays" :key="item.name")
+                            input(v-model="item.name")
+                            input(type="date" v-model="item.birthday")
+                            span.material-symbols-rounded(@click="deleteBirthday(index)") delete
+                        li
+                            input(v-model="newBirthday.name" placeholder="Name")
+                            input(type="date" v-model="newBirthday.birthday")
+                            span.material-symbols-rounded(@click="addBirthday") add_circle
+                    ul.list-ages(v-else)
+                        li(v-for="item in ages" :key="item.name")
+                            h3 {{ item.name }}
+                            p(v-if="item.isNotBorn") -{{ item.years }}y{{ item.months }}m{{ item.days }}d
+                            p(v-else) {{ item.years }}y{{ item.months }}m{{ item.days }}d 
+                    button(v-if="isEditBirthday" type="button" @click="finishEditBirthday()") Done
+                    div(v-else @click="isEditBirthday = true")
+                        span.material-symbols-rounded edit
+        Settings
+        About
+        Init(:isFileLoaded="isFileLoaded" :createDiary="createDiary" :loadDiary="loadDiary" :isBrowserSupport="isBrowserSupport")
 </template>
 
 <style scoped lang="sass"></style>

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useMainStore } from '../stores/mainStore'
 const props = defineProps<{
     isBrowserSupport: boolean
     isFileLoaded: boolean
@@ -11,7 +9,12 @@ const props = defineProps<{
 
 <template lang="pug">
 .modal.modal-unsupport(v-if="!isBrowserSupport")
-    p.text-gradient Oops! Your browser doesn’t support this feature. Please switch to Chrome on a desktop for the best experience.
+    .modal-content
+        h2 Oops!
+            br
+            | Your browser doesn’t support this feature.
+            br
+            | Please switch to Chrome on desktop or Android.
 .modal.modal-init(v-else-if="!props.isFileLoaded")
     .modal-content
         h2 Load or Create Diary

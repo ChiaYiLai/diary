@@ -13,21 +13,26 @@
     align-items: center
     z-index: 100
     box-sizing: border-box
-    &.modal-unsupport
-        padding: 2rem
-        p
-            font-size: 24px
     .modal-content
         padding: 2rem
-        background-color: rgba(0, 0, 0, .9)
-        border: 1px solid $border-light
+        background-color: var(--bg)
+        border: 1px solid $border-lighter
         width: 600px
         max-width: 90vw
         box-sizing: border-box
+        border-radius: $radius
+        +md
+            padding: 4rem
         h2
-            font-size: 24px
             margin-bottom: 2rem
+            background: linear-gradient(45deg, #f0c27b 25%, #fdf6e3 100%)
+            background-clip: text
+            -webkit-text-fill-color: transparent
+            font-size: 40px
+            font-weight: 700
             text-align: center
+            +md
+                margin-bottom: 3rem
 
 .list-settings
     list-style: none
@@ -41,3 +46,4 @@
         gap: 4rem
         align-items: center
         justify-content: space-between
+        min-height: 40px

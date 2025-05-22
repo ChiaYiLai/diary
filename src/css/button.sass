@@ -1,29 +1,74 @@
 @use 'global' as *
 
 button
-    background-color: #000
-    border: 1px solid #666
-    color: #ccc
+    background-color: transparent
+    border: 1px solid $border-lighter
+    color: rgba(255, 255, 255, .7)
     cursor: pointer
     padding: 8px 16px
-    border-radius: 2px
+    border-radius: $radius
     transition: .4s
     font-size: 14px
+    font-family: "Montserrat", sans-serif
     &:hover
-        background-color: #666
+        border-color: $border-light
         color: #fff
 
 input
-    border: 1px solid $border-light
-    border-radius: 4px
-    font-size: 16px
-    padding: 4px 12px
+    border: 1px solid $border-lighter
+    border-radius: $radius
+    font-size: 14px
+    padding: 8px 16px
     background-color: transparent
-    color: #ccc
+    color: rgba(255, 255, 255, .7)
     font-family: "Montserrat", sans-serif
     transition: .4s
-    +sm
-        font-size: 24px
+    &::placeholder
+        color: rgba(255, 255, 255, .5)
     &:hover
-        border-color: $border-lighter
+        border-color: $border-light
         color: #fff
+    &:focus
+        outline: 0
+
+textarea
+    &::placeholder
+        color: rgba(255, 255, 255, .5)
+
+$switch-size: 40px
+.switch
+  position: relative
+  width: $switch-size
+  height: $switch-size*.44
+  input
+    visibility: hidden
+    &:checked + label
+      background-color: #393
+      &:hover
+        background-color: #282
+      &:after
+        left: $switch-size*.53
+  label
+    position: absolute
+    left: 0
+    top: 0
+    width: $switch-size
+    height: $switch-size*0.44
+    background-color: rgba(255,255,255,.12)
+    border-radius: $switch-size
+    cursor: pointer
+    transition: .2s
+    &:hover
+      background-color: rgba(255,255,255,.24)
+    &:after
+      display: block
+      content: ''
+      position: absolute
+      left: -$switch-size*.03
+      top: -$switch-size*.03
+      width: calc($switch-size/2)
+      height: calc($switch-size/2)
+      border-radius: 50%
+      background-color: #fff
+      box-shadow: 0 2px 4px rgba(0,0,0,.2), 0 0 0 1px rgba(0,0,0,.04)
+      transition: .2s ease-in

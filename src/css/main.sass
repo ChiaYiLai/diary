@@ -4,13 +4,18 @@
 @use 'list'
 @use 'typo'
 
+
+:root
+    --bg: #1a1a1a
+    &[data-theme="blue"]
+        --bg: #149
 html
     font-size: 12px
     +md
         font-size: 16px
 body
-    background-color: $bg
-    color: #ccc
+    background-color: var(--bg)
+    color: rgba(255, 255, 255, .7)
     margin: 0
     padding: 0
     font-family: "Montserrat", sans-serif
@@ -25,7 +30,7 @@ body
     &:hover
         opacity: .5
 
-#app
+.app
     height: 100vh
     display: flex
     flex-direction: column
@@ -45,25 +50,29 @@ img.icon
     &:hover
         opacity: .5
 a
-    color: #ccc
+    color: rgba(255, 255, 255, .7)
     text-decoration: none
+
 .header-main
-    padding: 1rem 2rem
+    padding: .75rem 2rem
     display: flex
     justify-content: space-between
     align-items: center
     border-bottom: 1px solid $border-light
+    position: relative
     .left
         +sm
             display: none
     h1
         font-size: 18px
-        display: flex
-        gap: .5rem
-        align-items: center
         font-weight: 500
+        position: absolute
+        left: 50%
+        transform: translateX(-50%)
+        
     .right
         font-size: 12px
+        margin-left: auto
         
 ::-webkit-calendar-picker-indicator
     filter: invert(1)
@@ -91,13 +100,16 @@ a
         z-index: 9
         transition: .4s
         box-sizing: border-box
-        background-color: $bg
+        background-color: var(--bg)
         &.active
             left: 0
         +md
             display: block
             position: static
             max-width: 280px
+            .read-mode &
+                max-width: 100%
+                min-width: 100%
     .center
         flex: 1
         display: flex
@@ -110,32 +122,35 @@ a
             gap: 1rem
             align-items: center
             font-size: 12px
-            padding: 1rem 2rem
+            padding: 2rem 2rem 1rem
+            +md
+                gap: 1.5rem
+            .date-active
+                font-size: 18px
+                border-radius: 100px
+                padding: 8px 20px
+                border-color: $border-light
+                +md
+                    font-size: 24px
+                    padding: 8px 28px
             .day-active
                 font-size: 16px
                 +sm
                     font-size: 24px
             .delete
                 margin-left: auto
-            .prev-day, .next-day
-                img
-                    width: 36px
-                    cursor: pointer
-                    transition: .4s
-                    &:hover
-                        opacity: .5
-                    
-            .next-day
-                img
+            .prev-day
+                margin-left: .25rem
+                span
                     transform: rotate(180deg)
         textarea
-            padding: 0 2rem
+            padding: 0 2rem 2rem
             flex: 1
             color: #fff
             font-size: 32px
             font-weight: 300
             border: 0
-            background-color: $bg
+            background-color: var(--bg)
             font-family: "Montserrat", sans-serif
             line-height: 1.2
             +sm
@@ -144,11 +159,10 @@ a
                 outline: 0
 
 .footer-about
+    margin: 3rem 0 1rem
     text-align: center
-    margin-top: 3rem
     a
         font-size: 13px
-        padding: 1rem
         display: block
         text-decoration: underline
         text-underline-offset: 8px

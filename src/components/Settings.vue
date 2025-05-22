@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useMainStore } from '../stores/mainStore'
-
+const main = useMainStore()
 const fileInput = ref<HTMLInputElement | null>(null)
 
+const themes: string[] = ['dark', 'blue']
 const backupLocalStorage = () => {
     const data = JSON.stringify(localStorage, null, 2)
     const blob = new Blob([data], { type: 'application/json' })
@@ -35,23 +36,36 @@ const restoreLocalStorage = (event: Event) => {
 const triggerFileInput = () => {
     fileInput.value?.click()
 }
+const changeTheme = (theme: string) => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('theme', theme)
+}
 </script>
 
 <template lang="pug">
-.modal(v-if="useMainStore().isSettings" @click="useMainStore().isSettings = false")
+.modal(v-if="main.isSettings" @click="main.isSettings = false")
     .modal-content(@click.stop)
-        h2 Settings
+        h2.text-gradient Settings
         ul.list-settings
-            //- li
-            //-     label Backup
-            //-     button(@click="backupLocalStorage") Backup
-            //- li
-            //-     label Import
-            //-     button(@click="triggerFileInput") Import
-            //-     input(type="file" ref="fileInput" @change="restoreLocalStorage" accept="application/json" style="display: none")
+            li
+                label Diary Title
+                input(v-model="main.diaryTitle")
             li
                 label Show Ages
-                button(@click="useMainStore().isAge = !useMainStore().isAge") {{ useMainStore().isAge ? 'Close' : 'Open' }}
+                .switch
+                    input(type="checkbox" id="show-age" v-model="main.isAge")
+                    label(for="show-age")
+            li
+                label Read Mode
+                .switch
+                    input(type="checkbox" id="read-mode" v-model="main.isReadMode")
+                    label(for="read-mode")
+            li
+                label Theme
+                ul.list-themes
+                    li(v-for="theme in themes" :key="theme" :class="theme")
+                        button(@click="changeTheme(theme)")
+                        
 </template>
 
 <style scoped lang="sass"></style>

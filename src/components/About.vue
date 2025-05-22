@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useMainStore } from '../stores/mainStore'
+const main = useMainStore()
 </script>
 
 <template lang="pug">
-.modal.modal-about(v-if="useMainStore().isAbout" @click="useMainStore().isAbout = false")
+.modal.modal-about(v-if="main.isAbout" @click="main.isAbout = false")
     .modal-content(@click.stop)
-        h1.text-gradient About Local Diary
+        h2.text-gradient About Local Diary
         ul.list-about
             li
                 h3 Privacy
