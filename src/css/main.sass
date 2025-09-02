@@ -3,6 +3,7 @@
 @use 'button'
 @use 'list'
 @use 'typo'
+@use 'header'
 
 
 :root
@@ -19,7 +20,7 @@ body
     margin: 0
     padding: 0
     font-family: "Montserrat", sans-serif
-    line-height: 1.2
+    line-height: 1.4
     -webkit-font-smoonthing: antialiased
     padding-top: env(safe-area-inset-top)
 
@@ -52,27 +53,6 @@ img.icon
 a
     color: rgba(255, 255, 255, .7)
     text-decoration: none
-
-.header-main
-    padding: .75rem 2rem
-    display: flex
-    justify-content: space-between
-    align-items: center
-    border-bottom: 1px solid $border-light
-    position: relative
-    .left
-        +sm
-            display: none
-    h1
-        font-size: 18px
-        font-weight: 500
-        position: absolute
-        left: 50%
-        transform: translateX(-50%)
-        
-    .right
-        font-size: 12px
-        margin-left: auto
         
 ::-webkit-calendar-picker-indicator
     filter: invert(1)
@@ -110,6 +90,7 @@ a
             .read-mode &
                 max-width: 100%
                 min-width: 100%
+                padding: 2rem
     .center
         flex: 1
         display: flex
@@ -133,6 +114,8 @@ a
                 +md
                     font-size: 24px
                     padding: 8px 28px
+            .year-active
+                font-size: 36px
             .day-active
                 font-size: 16px
                 +sm
@@ -141,8 +124,11 @@ a
                 margin-left: auto
             .prev-day
                 margin-left: .25rem
+                display: flex
                 span
                     transform: rotate(180deg)
+            .next-day
+                display: flex
         textarea
             padding: 0 2rem 2rem
             flex: 1

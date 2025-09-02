@@ -1,0 +1,35 @@
+@use 'global' as *
+
+.header-main
+  padding: .75rem 2rem
+  display: flex
+  justify-content: space-between
+  align-items: center
+  background-color: rgba(0, 0, 0, .1)
+  border-bottom: 1px solid $border-light
+  position: relative
+  .left
+    +sm
+        display: none
+  h1
+    font-size: 18px
+    font-weight: 500
+    +xs
+      position: absolute
+      left: 50%
+      transform: translateX(-50%)
+      display: none
+      
+  .right
+    margin-left: auto
+    ul
+      display: flex
+      list-style: none
+      gap: 1rem
+      li
+        &.active
+          a
+            color: #fff
+        a
+          font-weight: 700
+        

@@ -22,10 +22,17 @@ interface Diary {
     date: string
     diary: string
 }
+interface Annals {
+    year: string
+    content: string
+}
 interface DiaryData {
     diaries: Diary[]
     birthdays: Birthday[]
+    annals: Annals[]
 }
+
+const mode = ref('diary')
 
 // 檔案處理相關變數
 const isBrowserSupport = ref(false)
@@ -34,8 +41,11 @@ const isFileLoaded = ref(false)
 
 // 日記資料
 const allDiaries = ref<Diary[]>([])
+const allAnnals = ref<Annals[]>([])
 const dateActive = ref(dayjs(new Date()).format('YYYY-MM-DD'))
+const yearActive = ref(dayjs(new Date()).format('YYYY'))
 const diaryActive = ref('')
+const annalsActive = ref('')
 const dateRefs = ref(new Map())
 const scrollContainer = ref(null)
 const isEditBirthday = ref(false)
@@ -65,6 +75,12 @@ const prevDay = computed(() => {
 })
 const nextDay = computed(() => {
     return dayjs(dateActive.value).add(1, 'day').format('YYYY-MM-DD')
+})
+const prevYear = computed(() => {
+    return dayjs(yearActive.value).subtract(1, 'year').format('YYYY')
+})
+const nextYear = computed(() => {
+    return dayjs(yearActive.value).add(1, 'year').format('YYYY')
 })
 const sameDays = computed(() => {
     return allDiaries.value.filter((item) => {
@@ -110,8 +126,10 @@ const loadDiary = async () => {
             if (Array.isArray(data.diaries)) {
                 sortDiaries(data.diaries)
                 allDiaries.value = data.diaries
+                allAnnals.value = data.annals
             } else {
                 allDiaries.value = []
+                allAnnals.value = []
             }
             if (Array.isArray(data.birthdays)) {
                 birthdays.value = data.birthdays
@@ -119,6 +137,7 @@ const loadDiary = async () => {
                 birthdays.value = []
             }
             changeDiary()
+            changeYear()
             isFileLoaded.value = true
         } catch (parseErr) {
             console.error('解析 JSON 失敗:', parseErr)
@@ -139,6 +158,7 @@ const createDiary = async () => {
         })
         const emptyData: DiaryData = {
             diaries: [],
+            annals: [],
             birthdays: []
         }
         allDiaries.value = []
@@ -150,7 +170,14 @@ const createDiary = async () => {
     }
 }
 
-const saveDataToFile = async (data: DiaryData) => {
+const saveDataToFile = async (data?: DiaryData) => {
+    if (!data) {
+        data = {
+            diaries: allDiaries.value,
+            annals: allAnnals.value,
+            birthdays: birthdays.value
+        }
+    }
     if (!fileHandle.value) {
         alert('請先選擇一個檔案')
         return
@@ -170,6 +197,9 @@ const sortDiaries = (diaries: Diary[]) => {
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     )
 }
+const sortAnnals = (annals: Annals[]) => {
+    annals.sort((a, b) => Number(b.year) - Number(a.year))
+}
 
 const getDay = (date: string) => {
     const locale = navigator.language
@@ -184,6 +214,12 @@ const handleDate = (date: string) => {
     changeDiary()
 }
 
+const handleYear = (year: string) => {
+    yearActive.value = year
+    isDiaryList.value = false
+    changeYear()
+}
+
 const changeDiary = () => {
     const entry = allDiaries.value.find(
         (item) => item.date === dateActive.value
@@ -191,59 +227,70 @@ const changeDiary = () => {
     diaryActive.value = entry ? entry.diary : ''
 }
 
+const changeYear = () => {
+    const entry = allAnnals.value.find((item) => item.year === yearActive.value)
+    annalsActive.value = entry ? entry.content : ''
+}
+
 const saveDiary = async () => {
     let updated = false
-    for (let i = 0; i < allDiaries.value.length; i++) {
-        if (allDiaries.value[i].date === dateActive.value) {
-            allDiaries.value[i].diary = diaryActive.value
-            updated = true
-            break
+    if (mode.value === 'diary') {
+        for (let i = 0; i < allDiaries.value.length; i++) {
+            if (allDiaries.value[i].date === dateActive.value) {
+                allDiaries.value[i].diary = diaryActive.value
+                updated = true
+                break
+            }
+        }
+
+        if (!updated) {
+            allDiaries.value.push({
+                date: dateActive.value,
+                diary: diaryActive.value
+            })
+            sortDiaries(allDiaries.value)
+        }
+    }
+    if (mode.value === 'annals') {
+        for (let i = 0; i < allAnnals.value.length; i++) {
+            if (allAnnals.value[i].year === yearActive.value) {
+                allAnnals.value[i].content = annalsActive.value
+                updated = true
+                break
+            }
+        }
+
+        if (!updated) {
+            allAnnals.value.push({
+                year: yearActive.value,
+                content: annalsActive.value
+            })
+            sortAnnals(allAnnals.value)
         }
     }
 
-    if (!updated) {
-        allDiaries.value.push({
-            date: dateActive.value,
-            diary: diaryActive.value
-        })
-        sortDiaries(allDiaries.value)
-    }
-
-    const dataToSave: DiaryData = {
-        diaries: allDiaries.value,
-        birthdays: birthdays.value
-    }
-
-    await saveDataToFile(dataToSave)
+    await saveDataToFile()
 }
 
 const handleSaveDiary = () => {
     if (saveTimer) clearTimeout(saveTimer)
-    saveTimer = setTimeout(saveDiary, 500)
+    saveTimer = setTimeout(saveDiary, 3000)
 }
 
 const addBirthday = async () => {
     birthdays.value.push(newBirthday.value)
-    await saveBirthday()
+    await saveDataToFile()
     newBirthday.value = { name: '', birthday: '' }
 }
 
 const deleteBirthday = async (index: number) => {
     birthdays.value.splice(index, 1)
-    await saveBirthday()
-}
-
-const saveBirthday = async () => {
-    const dataToSave: DiaryData = {
-        diaries: allDiaries.value,
-        birthdays: birthdays.value
-    }
-    await saveDataToFile(dataToSave)
+    await saveDataToFile()
 }
 
 const finishEditBirthday = async () => {
     isEditBirthday.value = false
-    await saveBirthday()
+    await saveDataToFile()
 }
 
 onMounted(() => {
@@ -259,48 +306,71 @@ onMounted(() => {
 <template lang="pug">
     .app(:class="main.isReadMode ? 'read-mode' : 'edit-mode'")
         header.header-main
-            .left(@click="isDiaryList = !isDiaryList")
-                span.material-symbols-rounded notes
+            .left
+                span.material-symbols-rounded(@click="isDiaryList = !isDiaryList") notes
             h1(@click="main.isAbout = true") {{ main.diaryTitle }}
-            .right(@click="main.isSettings = true")
-                span.material-symbols-rounded more_horiz
+            .right
+                ul
+                    li(:class="{ active: mode === 'annals'}")
+                        a(href="#" @click.prvent="mode = 'annals'") Annals
+                    li(:class="{ active: mode === 'diary'}")
+                        a(href="#" @click.prevent="mode = 'diary'") Diary
+                    li
+                        a(href="#" @click="main.isSettings = true") Settings
         main.main-main
             .left(ref="scrollContainer" :class="{ 'active': isDiaryList }")
-                ul.list-diaries
+                ul.list-diaries(v-if="mode === 'diary'")
                     li(v-for="item in allDiaries" :key="item.date" @click="handleDate(item.date)" :class="{ active: item.date === dateActive }")
-                        h3(:ref="el => dateRefs.set(item.date, el)" :data-date="item.date") {{ item.date }} {{ getDay(item.date) }}
+                        h3(:ref="el => dateRefs.set(item.date, el)" :data-date="item.date")
+                            b {{ item.date }}
+                            span {{ getDay(item.date) }}
                         p {{ item.diary }}
+                ul.list-diaries(v-if="mode === 'annals'")
+                    li(v-for="item in allAnnals" :key="item.year" @click="handleYear(item.year)" :class="{ active: item.year === yearActive }")
+                        h3 {{ item.year }} 年
+                        p {{ item.content }}
             .center
-                .date
-                    .prev-day(@click="handleDate(prevDay)" :title="prevDay")
-                        span.material-symbols-rounded expand_circle_right
-                    input.date-active(type="date" v-model="dateActive" @change="changeDiary")
-                    .day-active {{ getDay(dateActive) }}
-                    .next-day(@click="handleDate(nextDay)" :title="nextDay")
-                        span.material-symbols-rounded expand_circle_right
-                textarea.diary-active(placeholder="Write your diary here" @input="handleSaveDiary" v-model="diaryActive" :disabled="!isFileLoaded")
-                ul.list-same-days
-                    li(v-for="item in sameDays" :key="item.date" @click="handleDate(item.date)")
-                        h3 {{ item.date }} {{ getDay(item.date) }}
-                        p {{ item.diary }}
-                .box-ages(v-if="main.isAge")
-                    ul.list-birthdays(v-if="isEditBirthday")
-                        li(v-for="(item, index) in birthdays" :key="item.name")
-                            input(v-model="item.name")
-                            input(type="date" v-model="item.birthday")
-                            span.material-symbols-rounded(@click="deleteBirthday(index)") delete
-                        li
-                            input(v-model="newBirthday.name" placeholder="Name")
-                            input(type="date" v-model="newBirthday.birthday")
-                            span.material-symbols-rounded(@click="addBirthday") add_circle
-                    ul.list-ages(v-else)
-                        li(v-for="item in ages" :key="item.name")
-                            h3 {{ item.name }}
-                            p(v-if="item.isNotBorn") -{{ item.years }}y{{ item.months }}m{{ item.days }}d
-                            p(v-else) {{ item.years }}y{{ item.months }}m{{ item.days }}d 
-                    button(v-if="isEditBirthday" type="button" @click="finishEditBirthday()") Done
-                    div(v-else @click="isEditBirthday = true")
-                        span.material-symbols-rounded edit
+                template(v-if="mode === 'diary'")
+                    .date
+                        .prev-day(@click="handleDate(prevDay)" :title="prevDay")
+                            span.material-symbols-rounded expand_circle_right
+                        input.date-active(type="date" v-model="dateActive" @change="changeDiary")
+                        .day-active {{ getDay(dateActive) }}
+                        .next-day(@click="handleDate(nextDay)" :title="nextDay")
+                            span.material-symbols-rounded expand_circle_right
+                    textarea.diary-active(placeholder="Write your diary here" @input="handleSaveDiary" v-model="diaryActive" :disabled="!isFileLoaded")
+                    ul.list-same-days
+                        li(v-for="item in sameDays" :key="item.date" @click="handleDate(item.date)")
+                            h3
+                                b {{ item.date }}
+                                span {{ getDay(item.date) }}
+                            p {{ item.diary }}
+                    .box-ages(v-if="main.isAge")
+                        ul.list-birthdays(v-if="isEditBirthday")
+                            li(v-for="(item, index) in birthdays" :key="item.name")
+                                input(v-model="item.name")
+                                input(type="date" v-model="item.birthday")
+                                span.material-symbols-rounded(@click="deleteBirthday(index)") delete
+                            li
+                                input(v-model="newBirthday.name" placeholder="Name")
+                                input(type="date" v-model="newBirthday.birthday")
+                                span.material-symbols-rounded(@click="addBirthday") add_circle
+                        ul.list-ages(v-else)
+                            li(v-for="item in ages" :key="item.name")
+                                h3 {{ item.name }}
+                                p(v-if="item.isNotBorn") -{{ item.years }}y{{ item.months }}m{{ item.days }}d
+                                p(v-else) {{ item.years }}y{{ item.months }}m{{ item.days }}d 
+                        button(v-if="isEditBirthday" type="button" @click="finishEditBirthday()") Done
+                        div(v-else @click="isEditBirthday = true")
+                            span.material-symbols-rounded edit
+                template(v-if="mode === 'annals'")
+                    .date
+                        .prev-day(@click="handleYear(prevYear)" :title="prevYear")
+                            span.material-symbols-rounded expand_circle_right
+                        .year-active {{ yearActive }} 年
+                        .next-day(@click="handleYear(nextYear)" :title="nextYear")
+                            span.material-symbols-rounded expand_circle_right
+                    textarea.annals-active(placeholder="Write your Annals here" @input="handleSaveDiary" v-model="annalsActive" :disabled="!isFileLoaded")
         Settings
         About
         Init(:isFileLoaded="isFileLoaded" :createDiary="createDiary" :loadDiary="loadDiary" :isBrowserSupport="isBrowserSupport")
