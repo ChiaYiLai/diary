@@ -273,8 +273,10 @@ const saveDiary = async () => {
 }
 
 const handleSaveDiary = () => {
-    if (saveTimer) clearTimeout(saveTimer)
-    saveTimer = setTimeout(saveDiary, 3000)
+    if (main.isAutoSave) {
+        if (saveTimer) clearTimeout(saveTimer)
+        saveTimer = setTimeout(saveDiary, 2000)
+    }
 }
 
 const addBirthday = async () => {
@@ -338,6 +340,7 @@ onMounted(() => {
                         .day-active {{ getDay(dateActive) }}
                         .next-day(@click="handleDate(nextDay)" :title="nextDay")
                             span.material-symbols-rounded expand_circle_right
+                        button.box-save(@click="saveDiary") SAVE
                     textarea.diary-active(placeholder="Write your diary here" @input="handleSaveDiary" v-model="diaryActive" :disabled="!isFileLoaded")
                     ul.list-same-days
                         li(v-for="item in sameDays" :key="item.date" @click="handleDate(item.date)")

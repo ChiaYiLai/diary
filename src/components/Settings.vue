@@ -61,6 +61,11 @@ const changeTheme = (theme: string) => {
                     input(type="checkbox" id="read-mode" v-model="main.isReadMode")
                     label(for="read-mode")
             li
+                label Auto Save
+                .switch
+                    input(type="checkbox" id="auto-save" v-model="main.isAutoSave")
+                    label(for="auto-save")
+            li
                 label Theme
                 ul.list-themes
                     li(v-for="theme in themes" :key="theme" :class="theme")

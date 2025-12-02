@@ -6,11 +6,12 @@ export const useMainStore = defineStore('main', () => {
     const isAbout = ref(false)
     const isAge = ref(true)
     const isReadMode = ref(false)
+    const isAutoSave = ref(false)
     const diaryTitle = ref(localStorage.getItem('diaryTitle') || 'Local Diary')
 
     watch(diaryTitle, (newVal) => {
         localStorage.setItem('diaryTitle', newVal)
     })
 
-    return { isSettings, isAbout, isAge, isReadMode, diaryTitle }
+    return { isSettings, isAbout, isAge, isReadMode, isAutoSave, diaryTitle }
 })
