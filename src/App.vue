@@ -10,6 +10,9 @@ const fileTypes: FilePickerAcceptType[] = [
         accept: { 'application/json': ['.json'] }
     }
 ]
+import { useFileHandle } from './composables/useFileHandle'
+
+const { saveHandle, getSavedHandle, clearHandle } = useFileHandle()
 
 interface Birthday {
     name: string
@@ -109,6 +112,49 @@ const checkBrowser = async () => {
 }
 
 const loadDiary = async () => {
+    try {
+        const [handle] = await window.showOpenFilePicker({
+            types: fileTypes,
+            excludeAcceptAllOption: true,
+            multiple: false
+        })
+        fileHandle.value = handle
+        await saveHandle(handle) // 👈 加這行
+        await readFile(handle)
+    } catch (err) {
+        console.error('開啟檔案失敗:', err)
+    }
+}
+
+// 抽出讀檔邏輯（方便重用）
+const readFile = async (handle: FileSystemFileHandle) => {
+    const file = await handle.getFile()
+    const contents = await file.text()
+    try {
+        const data: DiaryData = JSON.parse(contents)
+        if (Array.isArray(data.diaries)) {
+            sortDiaries(data.diaries)
+            allDiaries.value = data.diaries
+            allAnnals.value = data.annals
+        } else {
+            allDiaries.value = []
+            allAnnals.value = []
+        }
+        if (Array.isArray(data.birthdays)) {
+            birthdays.value = data.birthdays
+        } else {
+            birthdays.value = []
+        }
+        changeDiary()
+        changeYear()
+        isFileLoaded.value = true
+    } catch (parseErr) {
+        console.error('解析 JSON 失敗:', parseErr)
+        alert('檔案格式錯誤，無法載入日記資料')
+    }
+}
+
+const loadDiary2 = async () => {
     try {
         const [handle] = await window.showOpenFilePicker({
             types: fileTypes,
@@ -292,13 +338,19 @@ const finishEditBirthday = async () => {
     await saveDataToFile()
 }
 
-onMounted(() => {
+onMounted(async () => {
     dateRefs.value = new Map()
     checkBrowser()
     document.documentElement.setAttribute(
         'data-theme',
         localStorage.getItem('theme') || 'dark'
     )
+
+    const handle = await getSavedHandle()
+    if (handle) {
+        fileHandle.value = handle
+        await readFile(handle)
+    }
 })
 </script>
 

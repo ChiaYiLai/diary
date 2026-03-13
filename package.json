@@ -13,6 +13,7 @@
         "@tailwindcss/vite": "^4.2.0",
         "@types/wicg-file-system-access": "^2023.10.6",
         "dayjs": "^1.11.13",
+        "idb-keyval": "^6.2.2",
         "pinia": "^3.0.1",
         "pug": "^3.0.3",
         "sass": "^1.86.0",
