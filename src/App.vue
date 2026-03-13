@@ -2,9 +2,6 @@
 import { ref, onMounted, computed, watch, nextTick } from 'vue'
 import { calcAge } from './functions'
 import dayjs from 'dayjs'
-import Settings from './components/Settings.vue'
-import About from './components/About.vue'
-import Init from './components/Init.vue'
 import { useMainStore } from './stores/mainStore'
 const main = useMainStore()
 const fileTypes: FilePickerAcceptType[] = [
@@ -373,6 +370,7 @@ onMounted(() => {
                         .year-active {{ yearActive }} 年
                         .next-day(@click="handleYear(nextYear)" :title="nextYear")
                             span.material-symbols-rounded expand_circle_right
+                        button.box-save(@click="saveDiary") SAVE
                     textarea.annals-active(placeholder="Write your Annals here" @input="handleSaveDiary" v-model="annalsActive" :disabled="!isFileLoaded")
         Settings
         About
