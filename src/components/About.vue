@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useMainStore } from '../stores/mainStore'
 const main = useMainStore()
 </script>
 

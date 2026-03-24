@@ -1,0 +1,96 @@
+import dayjs from 'dayjs'
+const toast = useToast()
+export const useDiaryStore = defineStore('diary', () => {
+  const diaries = ref<Diary[]>([])
+  const birthdays = ref<Birthday[]>([])
+  const annals = ref<Annals[]>([])
+  const isModalDiary = ref<boolean>(false)
+  const isModalYear = ref<boolean>(false)
+  const currentMonth = ref(dayjs().format('YYYY-MM'))
+  const currentYear = ref(dayjs().format('YYYY'))
+  const currentDay = ref<string>('')
+
+  function loadFromJson(data: DiaryData) {
+    diaries.value = data.diaries ?? []
+    birthdays.value = data.birthdays ?? []
+    annals.value = data.annals ?? []
+  }
+
+  function exportJson(): DiaryData {
+    return {
+      diaries: diaries.value,
+      birthdays: birthdays.value,
+      annals: annals.value,
+    }
+  }
+
+  // --- Diary ---
+  function getDiary(date: string) {
+    return diaries.value.find(d => d.date === date)?.diary ?? ''
+  }
+
+  function setDiary(date: string, content: string) {
+    const index = diaries.value.findIndex(d => d.date === date)
+    if (content.trim() === '') {
+      if (index !== -1) diaries.value.splice(index, 1)
+    } else if (index !== -1) {
+      diaries.value[index].diary = content
+    } else {
+      diaries.value.push({ date, diary: content })
+    }
+    toast.success('日記修改成功')
+    isModalDiary.value = false
+  }
+  const diaryMap = computed(() => Object.fromEntries(diaries.value.map(d => [d.date, d.diary])))
+  const sortedDiaries = computed(() => [...diaries.value].sort((a, b) => b.date.localeCompare(a.date)))
+
+  // --- Annals ---
+  function getAnnals(year: string) {
+    return annals.value.find(a => a.year === year)?.content ?? ''
+  }
+
+  function setAnnals(year: string, content: string) {
+    const index = annals.value.findIndex(a => a.year === year)
+    if (content.trim() === '') {
+      if (index !== -1) annals.value.splice(index, 1)
+    } else if (index !== -1) {
+      annals.value[index].content = content
+    } else {
+      annals.value.push({ year, content })
+    }
+    isModalYear.value = false
+  }
+
+  const sortedAnnals = computed(() => [...annals.value].sort((a, b) => b.year.localeCompare(a.year)))
+
+  const handleEditDiary = date => {
+    currentDay.value = date
+    isModalDiary.value = true
+  }
+  const handleEditYear = (year = currentYear.value) => {
+    currentYear.value = year
+    isModalYear.value = true
+  }
+
+  return {
+    diaries,
+    birthdays,
+    annals,
+    loadFromJson,
+    exportJson,
+    getDiary,
+    setDiary,
+    sortedDiaries,
+    getAnnals,
+    setAnnals,
+    sortedAnnals,
+    diaryMap,
+    handleEditDiary,
+    handleEditYear,
+    currentDay,
+    currentMonth,
+    currentYear,
+    isModalDiary,
+    isModalYear,
+  }
+})

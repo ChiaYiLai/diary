@@ -1,76 +1,46 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useMainStore } from '../stores/mainStore'
-const main = useMainStore()
-const fileInput = ref<HTMLInputElement | null>(null)
-
-const themes: string[] = ['dark', 'blue']
-const backupLocalStorage = () => {
-    const data = JSON.stringify(localStorage, null, 2)
-    const blob = new Blob([data], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'diary.json'
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-}
-const restoreLocalStorage = (event: Event) => {
-    const file = (event.target as HTMLInputElement).files?.[0]
-    if (!file) return
-
-    const reader = new FileReader()
-    reader.onload = () => {
-        try {
-            const data = JSON.parse(reader.result as string)
-            Object.keys(data).forEach((key) => {
-                localStorage.setItem(key, data[key])
-            })
-            location.reload()
-        } catch (error) {}
-    }
-    reader.readAsText(file)
-}
-const triggerFileInput = () => {
-    fileInput.value?.click()
-}
-const changeTheme = (theme: string) => {
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem('theme', theme)
-}
+const mainStore = useMainStore()
+const themeStore = useThemeStore()
+const { fileInfo } = storeToRefs(mainStore)
+const { createFile, switchFile, closeFile } = useFile()
 </script>
 
-<template lang="pug">
-.modal(v-if="main.isSettings" @click="main.isSettings = false")
-    .modal-content(@click.stop)
-        h2.text-gradient Settings
-        ul.list-settings
-            li
-                label Diary Title
-                input(v-model="main.diaryTitle")
-            li
-                label Show Ages
-                .switch
-                    input(type="checkbox" id="show-age" v-model="main.isAge")
-                    label(for="show-age")
-            li
-                label Read Mode
-                .switch
-                    input(type="checkbox" id="read-mode" v-model="main.isReadMode")
-                    label(for="read-mode")
-            li
-                label Auto Save
-                .switch
-                    input(type="checkbox" id="auto-save" v-model="main.isAutoSave")
-                    label(for="auto-save")
-            li
-                label Theme
-                ul.list-themes
-                    li(v-for="theme in themes" :key="theme" :class="theme")
-                        button(@click="changeTheme(theme)")
-                        
-</template>
+<template>
+  <Modal v-model="mainStore.isSettings" modalTitle="Settings" size="sm">
+    <ul class="flex flex-col gap-12">
+      <li class="flex justify-between items-center gap-6">
+        <label>
+          Theme:
+          <b class="capitalize">{{ themeStore.primary }}</b>
+        </label>
+        <ul class="flex flex-wrap justify-end gap-2 max-w-96">
+          <li
+            v-for="color in themeStore.colors"
+            :key="color"
+            class="w-8 h-8 cursor-pointer flex items-center justify-center"
+            :class="`bg-${color}-400`"
+            @click="themeStore.setColor(color)"
+            :title="color"
+          >
+            <span v-if="themeStore.primary === color" class="material-symbols-rounded text-white text-base">check</span>
+          </li>
+        </ul>
+      </li>
+      <li class="flex justify-between items-center gap-6">
+        <label v-if="fileInfo">
+          File:
+          <b>
+            {{ fileInfo.name }}
+          </b>
 
-<style scoped lang="sass"></style>
+          <span class="ml-1">({{ (fileInfo.size / 1024).toFixed(0) }} KB)</span>
+        </label>
+        <div class="flex flex-wrap gap-3">
+          <Btn @click="createFile">新日記</Btn>
+          <Btn @click="switchFile">載入其他日記</Btn>
+          <Btn @click="closeFile">關閉當前日記</Btn>
+        </div>
+      </li>
+    </ul>
+  </Modal>
+</template>

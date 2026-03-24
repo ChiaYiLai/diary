@@ -1,34 +1,38 @@
 {
-    "name": "diary",
-    "private": true,
-    "version": "0.0.0",
-    "type": "module",
-    "scripts": {
-        "dev": "vite",
-        "build": "vue-tsc -b && vite build",
-        "deploy": "npm run build && gh-pages -d dist",
-        "preview": "vite preview"
-    },
-    "dependencies": {
-        "@tailwindcss/vite": "^4.2.0",
-        "@types/wicg-file-system-access": "^2023.10.6",
-        "dayjs": "^1.11.13",
-        "idb-keyval": "^6.2.2",
-        "pinia": "^3.0.1",
-        "pug": "^3.0.3",
-        "sass": "^1.86.0",
-        "tailwindcss": "^4.2.0",
-        "unplugin-vue-components": "^31.0.0",
-        "vite-plugin-pug": "^0.4.1",
-        "vue": "^3.5.13"
-    },
-    "devDependencies": {
-        "@vitejs/plugin-vue": "^5.2.1",
-        "@vue/tsconfig": "^0.7.0",
-        "gh-pages": "^6.3.0",
-        "prettier": "3.5.3",
-        "typescript": "~5.7.2",
-        "vite": "^6.2.0",
-        "vue-tsc": "^2.2.4"
-    }
+  "name": "diary",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "deploy": "npm run build && gh-pages -d dist",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.2.0",
+    "@types/wicg-file-system-access": "^2023.10.6",
+    "@vueuse/core": "^14.2.1",
+    "dayjs": "^1.11.13",
+    "idb-keyval": "^6.2.2",
+    "lodash-es": "^4.17.23",
+    "pinia": "^3.0.1",
+    "pug": "^3.0.3",
+    "sass": "^1.86.0",
+    "tailwindcss": "^4.2.0",
+    "unplugin-auto-import": "^21.0.0",
+    "unplugin-vue-components": "^31.0.0",
+    "vite-plugin-pug": "^0.4.1",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.12",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/tsconfig": "^0.7.0",
+    "gh-pages": "^6.3.0",
+    "prettier": "3.5.3",
+    "typescript": "~5.7.2",
+    "vite": "^6.2.0",
+    "vue-tsc": "^2.2.4"
+  }
 }
