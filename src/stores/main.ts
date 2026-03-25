@@ -5,7 +5,7 @@ export const useMainStore = defineStore('main', () => {
   const fileHandle = ref<FileSystemFileHandle | null>(null)
   const fileInfo = ref<{ name: string; lastModified: number; size: number } | null>(null)
   const isFileLoaded = ref(false)
-  const viewMode = ref(localStorage.getItem('viewMode') || 'Month')
+  const viewMode = ref(localStorage.getItem('viewMode') || 'month')
   const isSettings = ref(false)
   const isAbout = ref(false)
   const isAge = ref(true)
