@@ -38,7 +38,7 @@ const { primary: c } = storeToRefs(themeStore)
 const changeMonth = (dir: 1 | -1) => {
   currentMonth.value = dayjs(currentMonth.value).add(dir, 'month').format('YYYY-MM')
 }
-const changeYear = num => {
+const changeYear = (num: number) => {
   currentYear.value = String(Number(currentYear.value) + num)
 }
 

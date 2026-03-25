@@ -31,7 +31,7 @@ watch(
   { immediate: true },
 )
 
-const changeYear = num => {
+const changeYear = (num: number) => {
   currentYear.value = String(Number(currentYear.value) + num)
 }
 </script>

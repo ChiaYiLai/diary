@@ -2,7 +2,6 @@ import dayjs from 'dayjs'
 const toast = useToast()
 export const useDiaryStore = defineStore('diary', () => {
   const diaries = ref<Diary[]>([])
-  const birthdays = ref<Birthday[]>([])
   const annals = ref<Annals[]>([])
   const isModalDiary = ref<boolean>(false)
   const isModalYear = ref<boolean>(false)
@@ -12,14 +11,12 @@ export const useDiaryStore = defineStore('diary', () => {
 
   function loadFromJson(data: DiaryData) {
     diaries.value = data.diaries ?? []
-    birthdays.value = data.birthdays ?? []
     annals.value = data.annals ?? []
   }
 
   function exportJson(): DiaryData {
     return {
       diaries: diaries.value,
-      birthdays: birthdays.value,
       annals: annals.value,
     }
   }
@@ -63,7 +60,7 @@ export const useDiaryStore = defineStore('diary', () => {
 
   const sortedAnnals = computed(() => [...annals.value].sort((a, b) => b.year.localeCompare(a.year)))
 
-  const handleEditDiary = date => {
+  const handleEditDiary = (date: string) => {
     currentDay.value = date
     isModalDiary.value = true
   }
@@ -74,7 +71,6 @@ export const useDiaryStore = defineStore('diary', () => {
 
   return {
     diaries,
-    birthdays,
     annals,
     loadFromJson,
     exportJson,

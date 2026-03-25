@@ -14,7 +14,7 @@
             v-for="(day, i) in getMonthDays(Number(currentYear), month - 1)"
             :key="i"
             class="aspect-square flex items-center justify-center rounded-full text-xs relative"
-            @click="diaryStore.handleEditDiary(day.date)"
+            @click="day && diaryStore.handleEditDiary(day.date)"
           >
             <template v-if="day">
               <button class="w-8 h-8 flex items-center justify-center rounded-full" :class="day.hasDiary ? `bg-${c}-400 text-white` : ''">

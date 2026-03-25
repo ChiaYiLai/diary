@@ -13,6 +13,7 @@ export default defineConfig({
     AutoImport({
       imports: ['vue', 'pinia'],
       dirs: ['./src/stores', './src/composables', './src/types', './src/utils'],
+      dts: './src/auto-imports.d.ts',
     }),
     Components({
       dirs: ['src/components'],

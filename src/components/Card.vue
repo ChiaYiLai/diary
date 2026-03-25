@@ -13,6 +13,6 @@ import { getDay } from '../utils/date'
 const themeStore = useThemeStore()
 const { primary: c } = storeToRefs(themeStore)
 const props = defineProps<{
-  diary: object
+  diary: Diary
 }>()
 </script>

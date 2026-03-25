@@ -16,10 +16,7 @@ declare module 'vue' {
     AppHeader: typeof import('./src/components/AppHeader.vue')['default']
     AppToast: typeof import('./src/components/AppToast.vue')['default']
     Btn: typeof import('./src/components/Btn.vue')['default']
-    Calendar: typeof import('./src/components/Calendar.vue')['default']
     Card: typeof import('./src/components/Card.vue')['default']
-    copy: typeof import('./src/components/ModalDiary copy.vue')['default']
-    CurrentDiary: typeof import('./src/components/CurrentDiary.vue')['default']
     DateControl: typeof import('./src/components/DateControl.vue')['default']
     Init: typeof import('./src/components/Init.vue')['default']
     Modal: typeof import('./src/components/Modal.vue')['default']
@@ -30,6 +27,5 @@ declare module 'vue' {
     Settings: typeof import('./src/components/Settings.vue')['default']
     Tabs: typeof import('./src/components/Tabs.vue')['default']
     Year: typeof import('./src/components/Year.vue')['default']
-    YearOverview: typeof import('./src/components/YearOverview.vue')['default']
   }
 }

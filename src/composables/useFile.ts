@@ -6,7 +6,7 @@ export function useFile() {
   const diaryStore = useDiaryStore()
   const mainStore = useMainStore()
   const { fileHandle, isFileLoaded, fileInfo } = storeToRefs(mainStore)
-  const fileTypes = [
+  const fileTypes: FilePickerAcceptType[] = [
     {
       description: 'JSON',
       accept: { 'application/json': ['.json'] },
@@ -121,7 +121,7 @@ export function useFile() {
     await clearHandle()
     fileHandle.value = null
     isFileLoaded.value = false
-    diaryStore.loadFromJson({ diaries: [], annals: [], birthdays: [] })
+    diaryStore.loadFromJson({ diaries: [], annals: [] })
     mainStore.isSettings = false
   }
 
@@ -134,10 +134,10 @@ export function useFile() {
   function startWatch() {
     if (watchStarted) return
     const diaryStore = useDiaryStore()
-    const { diaries, annals, birthdays } = storeToRefs(diaryStore)
+    const { diaries, annals } = storeToRefs(diaryStore)
     watchStarted = true
     watch(
-      [diaries, annals, birthdays],
+      [diaries, annals],
       debounce(() => {
         if (!isFileLoaded.value) return
         saveFile()
