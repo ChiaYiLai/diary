@@ -10,7 +10,7 @@
       :class="`border-${c}-300`"
       @click.stop
     >
-      <DateControl @prev="changeYear(-1)" @next="changeYear(1)" :heading="year" />
+      <DateControl @prev="changeYear(-1)" @next="changeYear(1)" :heading="String(year)" />
       <div class="grid grid-cols-3 gap-2 mt-3">
         <button
           v-for="(m, i) in months"

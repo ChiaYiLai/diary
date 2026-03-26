@@ -11,15 +11,15 @@
         <MonthPicker v-model="currentMonth" />
       </DateControl>
       <DateControl v-if="viewMode === 'year'" @prev="changeYear(-1)" @next="changeYear(1)" :heading="currentYear" />
-      <h1 v-if="viewMode === 'annals'" class="text-xl">Annals</h1>
+      <h1 v-if="viewMode === 'annals'" class="text-xl">{{ t('annals') }}</h1>
     </div>
 
     <Tabs
       v-model="viewMode"
       :tabs="[
-        { label: '月覽', value: 'month' },
-        { label: '年覽', value: 'year' },
-        { label: '年記', value: 'annals' },
+        { label: t('monthly'), value: 'month' },
+        { label: t('yearly'), value: 'year' },
+        { label: t('annals'), value: 'annals' },
       ]"
     />
   </header>
@@ -28,6 +28,8 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import DateControl from './DateControl.vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const mainStore = useMainStore()
 const { fileInfo, viewMode } = storeToRefs(mainStore)
 const diaryStore = useDiaryStore()

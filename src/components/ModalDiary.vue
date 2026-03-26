@@ -16,8 +16,10 @@
           v-model="currentDiary"
         ></textarea>
         <div class="flex justify-between items-center">
-          <span>字數：{{ currentDiary.length }}</span>
-          <Btn size="lg" @click="diaryStore.setDiary(currentDay, currentDiary)">儲存</Btn>
+          <div class="px-4 py-1 border rounded-lg text-xs" :class="`text-${c}-400 border-${c}-200`">
+            {{ currentDiary.length }} {{ t('wordCount') }}
+          </div>
+          <Btn size="lg" @click="saveDiary">{{ t('save') }}</Btn>
         </div>
       </div>
     </div>
@@ -26,6 +28,8 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import { getDay } from '../utils/date'
+const { t } = useI18n()
+const toast = useToast()
 const diaryStore = useDiaryStore()
 const { currentDay, isModalDiary, diaries } = storeToRefs(diaryStore)
 const themeStore = useThemeStore()
@@ -47,5 +51,10 @@ const sameDays = computed(() => {
 
 const changeDay = (dir: 1 | -1) => {
   currentDay.value = dayjs(currentDay.value).add(dir, 'day').format('YYYY-MM-DD')
+}
+
+const saveDiary = () => {
+  diaryStore.setDiary(currentDay.value, currentDiary.value)
+  toast.success(t('saved'))
 }
 </script>

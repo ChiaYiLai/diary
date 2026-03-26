@@ -7,7 +7,7 @@
           :class="`text-${c}-400 hover:text-${c}-700`"
           @click="goMonth(`${currentYear}-${String(month).padStart(2, '0')}`)"
         >
-          {{ month }}月
+          {{ getMonthName(month) }}
         </h4>
         <div class="grid grid-cols-7 gap-0.5">
           <div
@@ -30,6 +30,7 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
+const { locale } = useI18n()
 const mainStore = useMainStore()
 const { viewMode } = storeToRefs(mainStore)
 const diaryStore = useDiaryStore()
@@ -58,5 +59,10 @@ function getMonthDays(year: number, month: number) {
   }
 
   return days
+}
+
+function getMonthName(month: number) {
+  const date = new Date(2000, month - 1, 1)
+  return new Intl.DateTimeFormat(locale.value, { month: 'long' }).format(date)
 }
 </script>

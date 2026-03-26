@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-const toast = useToast()
 export const useDiaryStore = defineStore('diary', () => {
   const diaries = ref<Diary[]>([])
   const annals = ref<Annals[]>([])
@@ -35,7 +34,6 @@ export const useDiaryStore = defineStore('diary', () => {
     } else {
       diaries.value.push({ date, diary: content })
     }
-    toast.success('日記修改成功')
     isModalDiary.value = false
   }
   const diaryMap = computed(() => Object.fromEntries(diaries.value.map(d => [d.date, d.diary])))
@@ -68,6 +66,11 @@ export const useDiaryStore = defineStore('diary', () => {
     currentYear.value = year
     isModalYear.value = true
   }
+  const randomDiary = () => {
+    if (!diaries.value.length) return
+    const index = Math.floor(Math.random() * diaries.value.length)
+    handleEditDiary(diaries.value[index].date)
+  }
 
   return {
     diaries,
@@ -88,5 +91,6 @@ export const useDiaryStore = defineStore('diary', () => {
     currentYear,
     isModalDiary,
     isModalYear,
+    randomDiary,
   }
 })

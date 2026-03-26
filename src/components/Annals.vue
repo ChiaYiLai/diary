@@ -1,13 +1,13 @@
 <template>
-  <div v-if="annals.length" class="grid grid-cols-4 gap-8 px-8 pb-8">
+  <div v-if="annals.length" class="grid grid-cols-4 gap-8 p-8" :class="`bg-${c}-100`">
     <div
       v-for="item in sortAnnals"
       :key="item.year"
       class="flex flex-col rounded-xl overflow-hidden border cursor-pointer"
-      :class="`bg-${c}-100  border-${c}-300 hover:bg-${c}-50`"
+      :class="`border-${c}-300 bg-${c}-50`"
       @click="diaryStore.handleEditYear(item.year)"
     >
-      <header :class="`bg-${c}-200 border-${c}-300 border-b text-center py-2`">{{ item.year }}</header>
+      <header :class="`bg-${c}-100 border-${c}-300 border-b text-center py-2`">{{ item.year }}</header>
       <div class="flex-1 transition p-8 overflow-hidden min-h-50 max-h-100 whitespace-pre-wrap break-all">
         {{ item.content }}
       </div>

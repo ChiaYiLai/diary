@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     About: typeof import('./src/components/About.vue')['default']
     Annals: typeof import('./src/components/Annals.vue')['default']
+    AppFooter: typeof import('./src/components/AppFooter.vue')['default']
     AppHeader: typeof import('./src/components/AppHeader.vue')['default']
     AppToast: typeof import('./src/components/AppToast.vue')['default']
     Btn: typeof import('./src/components/Btn.vue')['default']

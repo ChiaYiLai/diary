@@ -16,8 +16,8 @@ onMounted(async () => {
     <Annals v-if="viewMode === 'annals'" />
   </div>
   <Init v-else />
+  <AppFooter />
   <Settings />
-  <About />
   <ModalDiary />
   <ModalYear />
   <AppToast />
