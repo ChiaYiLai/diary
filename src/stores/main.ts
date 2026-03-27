@@ -11,6 +11,9 @@ export const useMainStore = defineStore('main', () => {
   const isAge = ref(true)
   const isAutoSave = ref(false)
   const diaryTitle = ref(localStorage.getItem('diaryTitle') || 'Diary')
+  const isDark = ref(
+    localStorage.getItem('dark') !== null ? localStorage.getItem('dark') === 'true' : window.matchMedia('(prefers-color-scheme: dark)').matches,
+  )
 
   watch(diaryTitle, newVal => {
     localStorage.setItem('diaryTitle', newVal)
@@ -18,6 +21,14 @@ export const useMainStore = defineStore('main', () => {
   watch(viewMode, newVal => {
     localStorage.setItem('viewMode', newVal)
   })
+  watch(
+    isDark,
+    newVal => {
+      localStorage.setItem('dark', String(newVal))
+      document.documentElement.classList.toggle('dark', newVal)
+    },
+    { immediate: true },
+  )
 
-  return { fileHandle, fileInfo, isFileLoaded, viewMode, isSettings, isAbout, isAge, isAutoSave, diaryTitle }
+  return { fileHandle, fileInfo, isFileLoaded, viewMode, isSettings, isAbout, isAge, isAutoSave, diaryTitle, isDark }
 })

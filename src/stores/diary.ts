@@ -3,9 +3,10 @@ export const useDiaryStore = defineStore('diary', () => {
   const diaries = ref<Diary[]>([])
   const annals = ref<Annals[]>([])
   const isModalDiary = ref<boolean>(false)
-  const isModalYear = ref<boolean>(false)
-  const currentMonth = ref(dayjs().format('YYYY-MM'))
-  const currentYear = ref(dayjs().format('YYYY'))
+  const isModalAnnals = ref<boolean>(false)
+  const currentMonth = ref<string>(dayjs().format('YYYY-MM'))
+  const currentYear = ref<string>(dayjs().format('YYYY'))
+  const currentAnnals = ref('')
   const currentDay = ref<string>('')
 
   function loadFromJson(data: DiaryData) {
@@ -53,18 +54,18 @@ export const useDiaryStore = defineStore('diary', () => {
     } else {
       annals.value.push({ year, content })
     }
-    isModalYear.value = false
+    isModalAnnals.value = false
   }
 
   const sortedAnnals = computed(() => [...annals.value].sort((a, b) => b.year.localeCompare(a.year)))
 
-  const handleEditDiary = (date: string) => {
+  const handleEditDiary = (date: string = dayjs().format('YYYY-MM-DD')) => {
     currentDay.value = date
     isModalDiary.value = true
   }
-  const handleEditYear = (year = currentYear.value) => {
-    currentYear.value = year
-    isModalYear.value = true
+  const handleEditAnnals = (year: string = dayjs().format('YYYY')) => {
+    currentAnnals.value = year
+    isModalAnnals.value = true
   }
   const randomDiary = () => {
     if (!diaries.value.length) return
@@ -85,12 +86,13 @@ export const useDiaryStore = defineStore('diary', () => {
     sortedAnnals,
     diaryMap,
     handleEditDiary,
-    handleEditYear,
+    handleEditAnnals,
     currentDay,
     currentMonth,
     currentYear,
+    currentAnnals,
     isModalDiary,
-    isModalYear,
+    isModalAnnals,
     randomDiary,
   }
 })

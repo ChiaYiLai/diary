@@ -1,5 +1,7 @@
 <template>
-  <header class="bg-white relative flex gap-4 items-center justify-between pl-2 pr-4 py-2 relative z-9" :class="`text-${c}-500`">
+  <header
+    class="bg-taupe-50 dark:bg-taupe-950 relative flex gap-4 items-center justify-between pl-2 pr-4 py-2 z-9 text-taupe-500 dark:text-taupe-400"
+  >
     <div class="flex items-center">
       <Btn v="none" size="icon">
         <span class="material-symbols-rounded" @click="mainStore.isSettings = true">notes</span>
@@ -34,8 +36,6 @@ const mainStore = useMainStore()
 const { fileInfo, viewMode } = storeToRefs(mainStore)
 const diaryStore = useDiaryStore()
 const { currentMonth, currentYear, isModalDiary } = storeToRefs(diaryStore)
-const themeStore = useThemeStore()
-const { primary: c } = storeToRefs(themeStore)
 
 const changeMonth = (dir: 1 | -1) => {
   currentMonth.value = dayjs(currentMonth.value).add(dir, 'month').format('YYYY-MM')

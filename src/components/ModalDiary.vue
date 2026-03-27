@@ -1,25 +1,30 @@
 <template>
   <Modal v-model="isModalDiary">
-    <DateControl class="mb-4" @prev="changeDay(-1)" @next="changeDay(1)" :heading="`${currentDay} ${getDay(currentDay)}`" />
+    <DateControl class="mb-4" @prev="changeDay(-1)" @next="changeDay(1)">
+      <h3 class="flex items-center justify-center gap-2 text-xl">
+        {{ currentDay }}
+        <small>{{ getDay(currentDay) }}</small>
+      </h3>
+    </DateControl>
     <div class="flex gap-8">
       <div class="flex-1">
-        <ul class="flex flex-col gap-4">
-          <li v-for="item in sameDays" :key="item.date" @click="diaryStore.handleEditDiary(item.date)">
+        <ul class="flex flex-col gap-8 divide-y divide-black/10 dark:divide-white/15">
+          <li v-for="item in sameDays" :key="item.date" @click="diaryStore.handleEditDiary(item.date)" class="pb-8 px-2">
             <Card :diary="item" />
           </li>
         </ul>
       </div>
       <div class="flex-1">
         <textarea
-          :class="`p-6 text-xl/8 h-150 w-full border border-${c}-200 bg-${c}-100 text-${c}-500 outline-0 rounded-lg mb-3`"
-          placeholder="Write your diary here"
+          class="p-6 text-xl/8 h-150 w-full border bg-taupe-200 dark:bg-taupe-700 border-black/10 dark:border-white/15 text-black/70 dark:text-white/70 outline-0 rounded-lg mb-3"
+          :placeholder="t('writeDiaryHere')"
           v-model="currentDiary"
         ></textarea>
         <div class="flex justify-between items-center">
-          <div class="px-4 py-1 border rounded-lg text-xs" :class="`text-${c}-400 border-${c}-200`">
-            {{ currentDiary.length }} {{ t('wordCount') }}
-          </div>
           <Btn size="lg" @click="saveDiary">{{ t('save') }}</Btn>
+          <div v-if="currentDiary.length" class="px-3 py-1 border rounded-sm text-xs text-taupe-400 border-black/10 dark:border-white/15">
+            {{ t('wordCount', { count: currentDiary.length }) }}
+          </div>
         </div>
       </div>
     </div>
@@ -27,13 +32,12 @@
 </template>
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { getDay } from '../utils/date'
+const { getDay } = useDate()
+import DateControl from './DateControl.vue'
 const { t } = useI18n()
 const toast = useToast()
 const diaryStore = useDiaryStore()
 const { currentDay, isModalDiary, diaries } = storeToRefs(diaryStore)
-const themeStore = useThemeStore()
-const { primary: c } = storeToRefs(themeStore)
 const currentDiary = ref('')
 watch(
   currentDay,

@@ -1,7 +1,7 @@
 <template>
-  <div :class="`bg-${c}-50 border-${c}-300 text-${c}-700`" class="border-t">
-    <div :class="`bg-${c}-100`" class="grid grid-cols-7">
-      <div v-for="day in weekDays" :key="day" class="text-center text-sm border-b border-r" :class="`border-${c}-300`">
+  <div class="bg-taupe-100 dark:bg-taupe-800 border-taupe-300 dark:border-taupe-600 text-black/60 dark:text-white/70 border-t">
+    <div class="bg-taupe-100 dark:bg-taupe-900 grid grid-cols-7">
+      <div v-for="day in weekDays" :key="day" class="py-1 text-center text-sm border-b border-r border-taupe-300 dark:border-taupe-600">
         {{ day }}
       </div>
     </div>
@@ -10,15 +10,14 @@
       <div
         v-for="(item, index) in calendarDays"
         :key="index"
-        class="aspect-square relative cursor-pointer transition hover:bg-white/50 border-b border-r p-4 overflow-hidden"
-        :class="[`border-${c}-300`]"
+        class="border-taupe-300 dark:border-taupe-600 aspect-square relative cursor-pointer transition hover:bg-taupe-50 dark:hover:bg-taupe-700 border-b border-r p-4 overflow-hidden"
         @click="diaryStore.handleEditDiary(item.date)"
       >
         <div :class="!item.isCurrentMonth ? 'opacity-50' : ''">
           <h6
             v-if="item.dateNum"
             class="text-sm w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-2"
-            :class="[item.isToday ? `text-white bg-${c}-500` : '']"
+            :class="[item.isToday ? 'text-white bg-orange-300 dark:bg-orange-700' : '']"
           >
             {{ item.dateNum }}
           </h6>
@@ -33,16 +32,9 @@
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 const diaryStore = useDiaryStore()
-const themeStore = useThemeStore()
-const { primary: c } = storeToRefs(themeStore)
 const { diaryMap, currentMonth } = storeToRefs(diaryStore)
 const { locale } = useI18n()
-const weekDays = computed(() => {
-  return Array.from({ length: 7 }, (_, i) => {
-    const date = new Date(1970, 0, 5 + i) // 1970-01-05 是週一
-    return new Intl.DateTimeFormat(locale.value, { weekday: 'short' }).format(date)
-  })
-})
+const { weekDays } = useDate()
 
 const calendarDays = computed(() => {
   const startOfMonth = dayjs(currentMonth.value).startOf('month')

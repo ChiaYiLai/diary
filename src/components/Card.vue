@@ -1,17 +1,15 @@
 <template>
-  <div class="p-6 border rounded-lg" :class="`bg-${c}-100 border-${c}-200`">
-    <h3 class="flex gap-2 mb-2 text-sm">
+  <div>
+    <h3 class="flex items-center gap-2 mb-2 text-sm text-black/50 dark:text-white/50">
       <span>{{ diary.date }}</span>
-      <span>{{ getDay(diary.date) }}</span>
+      <small>{{ getDay(diary.date) }}</small>
     </h3>
     <p class="whitespace-pre-wrap break-all">{{ diary.diary }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { getDay } from '../utils/date'
-const themeStore = useThemeStore()
-const { primary: c } = storeToRefs(themeStore)
+const { getDay } = useDate()
 const props = defineProps<{
   diary: Diary
 }>()

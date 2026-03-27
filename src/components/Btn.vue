@@ -1,8 +1,6 @@
 <script setup lang="ts">
-const themeStore = useThemeStore()
-const { primary: c } = storeToRefs(themeStore)
 const props = defineProps<{
-  v?: 'primary' | 'warning' | 'danger' | 'light' | 'none' | 'addCost'
+  v?: 'primary' | 'none'
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon'
   disabled?: boolean
 }>()
@@ -12,12 +10,9 @@ const baseClass = 'cursor-pointer transition whitespace-nowrap leading-none roun
 const variantClass = computed(
   () =>
     ({
-      primary: `bg-${c.value}-400 hover:bg-${c.value}-500 text-${c.value}-50`,
-      warning: 'bg-teal-400 hover:bg-teal-600 text-white',
-      danger: 'bg-red-400 hover:bg-red-600 text-white',
-      light: 'bg-stone-400 hover:bg-stone-600 text-white',
-      none: `bg-transparent border-0 text-${c.value}-300 hover:bg-${c.value}-100 hover:text-${c.value}-500`,
-      addCost: 'bg-teal-400 text-white w-14 h-14',
+      primary:
+        'bg-taupe-200 dark:bg-taupe-700 border border-black/10 dark:border-white/15 text-black/70 dark:text-white/70 hover:bg-taupe-300 dark:hover:bg-taupe-800 hover:border-black/15 dark:hover:border-white/20 hover:text-black/90 dark:hover:text-white/90',
+      none: 'bg-transparent border-0 text-black/30 dark:text-white/50 hover:bg-black/5 dark:hover:bg-white/10 hover:text-black/90 dark:hover:text-white/90',
     })[props.v ?? 'primary'],
 )
 

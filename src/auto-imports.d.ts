@@ -69,6 +69,7 @@ declare global {
   const useAttrs: typeof import('vue').useAttrs
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
+  const useDate: typeof import('./composables/useDate').useDate
   const useDiaryStore: typeof import('./stores/diary').useDiaryStore
   const useFile: typeof import('./composables/useFile').useFile
   const useI18n: typeof import('vue-i18n').useI18n

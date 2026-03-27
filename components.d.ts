@@ -11,7 +11,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    About: typeof import('./src/components/About.vue')['default']
     Annals: typeof import('./src/components/Annals.vue')['default']
     AppFooter: typeof import('./src/components/AppFooter.vue')['default']
     AppHeader: typeof import('./src/components/AppHeader.vue')['default']
@@ -21,8 +20,11 @@ declare module 'vue' {
     DateControl: typeof import('./src/components/DateControl.vue')['default']
     Init: typeof import('./src/components/Init.vue')['default']
     Modal: typeof import('./src/components/Modal.vue')['default']
+    ModalAnnals: typeof import('./src/components/ModalAnnals.vue')['default']
     ModalDiary: typeof import('./src/components/ModalDiary.vue')['default']
+    ModalSettings: typeof import('./src/components/ModalSettings.vue')['default']
     ModalYear: typeof import('./src/components/ModalYear.vue')['default']
+    ModelSettings: typeof import('./src/components/ModelSettings.vue')['default']
     Month: typeof import('./src/components/Month.vue')['default']
     MonthPicker: typeof import('./src/components/MonthPicker.vue')['default']
     Settings: typeof import('./src/components/Settings.vue')['default']

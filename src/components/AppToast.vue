@@ -2,7 +2,7 @@
 const { toasts, remove } = useToast()
 
 const styles: Record<ToastType, string> = {
-  success: 'bg-green-500',
+  success: 'bg-lime-600 dark:bg-lime-800',
   error: 'bg-red-500',
   warning: 'bg-orange-500',
   info: 'bg-stone-500',
