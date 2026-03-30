@@ -27,6 +27,7 @@ declare module 'vue' {
     ModelSettings: typeof import('./src/components/ModelSettings.vue')['default']
     Month: typeof import('./src/components/Month.vue')['default']
     MonthPicker: typeof import('./src/components/MonthPicker.vue')['default']
+    Search: typeof import('./src/components/Search.vue')['default']
     Settings: typeof import('./src/components/Settings.vue')['default']
     Tabs: typeof import('./src/components/Tabs.vue')['default']
     Year: typeof import('./src/components/Year.vue')['default']

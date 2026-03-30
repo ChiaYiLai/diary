@@ -36,6 +36,9 @@ export const i18n = createI18n({
       wordCount: '已寫 {count} 字',
       writeDiaryHere: '寫下今天發生的事，也可以記錄讓你感謝的人事物...',
       writeAnnalsHere: '記錄這一年重要的事，回顧成長與改變...',
+
+      searchPlaceholder: '搜尋日記...',
+      search: '搜尋',
     },
     en: {
       language: 'Language',
@@ -60,6 +63,9 @@ export const i18n = createI18n({
       wordCount: '{count} chars written',
       writeDiaryHere: 'Write about your day, and what you are grateful for...',
       writeAnnalsHere: 'Record the important events of this year, reflect on your growth...',
+
+      searchPlaceholder: 'Search diary...',
+      search: 'Search',
     },
     ja: {
       language: '言語',
@@ -83,6 +89,9 @@ export const i18n = createI18n({
       wordCount: '{count} 文字を記録',
       writeDiaryHere: '今日の出来事や、感謝していることを書いてください...',
       writeAnnalsHere: '今年の大切な出来事や、成長を振り返って書いてください...',
+
+      searchPlaceholder: '日記を検索...',
+      search: '検索',
     },
   },
 })

@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -10,6 +11,7 @@ export default defineConfig({
   plugins: [
     vue(),
     tailwindcss(),
+    VitePWA({ registerType: 'autoUpdate' }),
     AutoImport({
       imports: ['vue', 'pinia', 'vue-i18n'],
       dirs: ['./src/stores', './src/composables', './src/types', './src/utils'],

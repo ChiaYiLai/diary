@@ -22,15 +22,18 @@
         { label: t('monthly'), value: 'month' },
         { label: t('yearly'), value: 'year' },
         { label: t('annals'), value: 'annals' },
+        { label: t('search'), value: 'search' },
       ]"
     />
   </header>
+  <Btn size="icon" @click="randomDiary" class="fixed right-12 bottom-12 z-999"><span class="material-symbols-rounded">question_mark</span></Btn>
 </template>
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import DateControl from './DateControl.vue'
 import { useI18n } from 'vue-i18n'
+const { randomDiary } = useDiaryStore()
 const { t } = useI18n()
 const mainStore = useMainStore()
 const { fileInfo, viewMode } = storeToRefs(mainStore)

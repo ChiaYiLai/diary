@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-center h-screen bg-taupe-200">
+  <div class="flex items-center justify-center flex-1">
     <div class="p-8 text-center">
       <h1 class="text-4xl mb-4">私人日記，只屬於你</h1>
       <p class="text-2xl mb-8">資料存在你的電腦，不上雲端，不需帳號，完全離線。</p>

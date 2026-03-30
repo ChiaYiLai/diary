@@ -10,7 +10,7 @@
       <div
         v-for="(item, index) in calendarDays"
         :key="index"
-        class="border-taupe-300 dark:border-taupe-600 aspect-square relative cursor-pointer transition hover:bg-taupe-50 dark:hover:bg-taupe-700 border-b border-r p-4 overflow-hidden"
+        class="border-taupe-300 dark:border-taupe-600 aspect-square relative cursor-pointer transition hover:bg-taupe-50 dark:hover:bg-taupe-900 border-b border-r p-4 overflow-hidden"
         @click="diaryStore.handleEditDiary(item.date)"
       >
         <div :class="!item.isCurrentMonth ? 'opacity-50' : ''">

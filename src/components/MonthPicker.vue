@@ -1,6 +1,6 @@
 <template>
   <div class="relative" ref="container">
-    <button :class="`text-xl text-taupe-500 hover:text-taupe-700`" @click="isOpen = !isOpen">
+    <button class="text-xl" @click="isOpen = !isOpen">
       {{ modelValue }}
     </button>
 

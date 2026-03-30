@@ -76,6 +76,7 @@ declare global {
   const useId: typeof import('vue').useId
   const useMainStore: typeof import('./stores/main').useMainStore
   const useModel: typeof import('vue').useModel
+  const useSearch: typeof import('./composables/useSearch').useSearch
   const useSlots: typeof import('vue').useSlots
   const useTemplateRef: typeof import('vue').useTemplateRef
   const useThemeStore: typeof import('./stores/theme').useThemeStore

@@ -6,14 +6,6 @@
   --default-transition-duration: 400ms;
 }
 
-button {
-  @apply cursor-pointer;
-}
-
-input {
-  @apply border border-black/10 p-3 text-xl;
-}
-
 .list-settings {
   @apply flex flex-col gap-12;
   > li {

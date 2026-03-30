@@ -5,9 +5,6 @@
       <a href="https://chiayilai.github.io/resume/" target="_blank">Chia Yi Lai</a>
     </address>
   </footer>
-  <Btn size="icon" @click="randomDiary" class="fixed right-12 bottom-12"><span class="material-symbols-rounded">question_mark</span></Btn>
 </template>
 
-<script setup lang="ts">
-const { randomDiary } = useDiaryStore()
-</script>
+<script setup lang="ts"></script>
