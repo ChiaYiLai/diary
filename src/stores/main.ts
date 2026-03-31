@@ -4,7 +4,6 @@ import { ref, watch } from 'vue'
 export const useMainStore = defineStore('main', () => {
   const fileHandle = ref<FileSystemFileHandle | null>(null)
   const fileInfo = ref<{ name: string; lastModified: number; size: number } | null>(null)
-  const isFileLoaded = ref(false)
   const viewMode = ref(localStorage.getItem('viewMode') || 'month')
   const isSettings = ref(false)
   const isAbout = ref(false)
@@ -30,5 +29,5 @@ export const useMainStore = defineStore('main', () => {
     { immediate: true },
   )
 
-  return { fileHandle, fileInfo, isFileLoaded, viewMode, isSettings, isAbout, isAge, isAutoSave, diaryTitle, isDark }
+  return { fileHandle, fileInfo, viewMode, isSettings, isAbout, isAge, isAutoSave, diaryTitle, isDark }
 })

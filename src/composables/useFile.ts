@@ -5,7 +5,7 @@ const IDB_KEY = 'diaryFileHandle'
 export function useFile() {
   const diaryStore = useDiaryStore()
   const mainStore = useMainStore()
-  const { fileHandle, isFileLoaded, fileInfo } = storeToRefs(mainStore)
+  const { fileHandle, fileInfo } = storeToRefs(mainStore)
   const fileTypes: FilePickerAcceptType[] = [
     {
       description: 'JSON',
@@ -13,7 +13,6 @@ export function useFile() {
     },
   ]
 
-  // --- IndexedDB handle 持久化 ---
   async function saveHandle(handle: FileSystemFileHandle) {
     await set(IDB_KEY, handle)
   }
@@ -42,7 +41,6 @@ export function useFile() {
     }
   }
 
-  // --- 檔案讀寫 ---
   async function readFile(handle: FileSystemFileHandle) {
     updateFileInfo(handle)
     const file = await handle.getFile()
@@ -50,7 +48,6 @@ export function useFile() {
     try {
       const data: DiaryData = JSON.parse(text)
       diaryStore.loadFromJson(data)
-      isFileLoaded.value = true
     } catch {
       alert('檔案格式錯誤，無法載入日記資料')
     }
@@ -64,7 +61,6 @@ export function useFile() {
         multiple: false,
       })
       fileHandle.value = handle
-      console.log(fileHandle.value)
       await saveHandle(handle)
       await readFile(handle)
       startWatch()
@@ -85,7 +81,6 @@ export function useFile() {
       diaryStore.loadFromJson({ diaries: [], annals: [] })
       await saveFile()
       updateFileInfo(handle)
-      isFileLoaded.value = true
       startWatch()
       mainStore.isSettings = false
     } catch (err) {
@@ -104,7 +99,6 @@ export function useFile() {
       await writable.close()
     } catch (err) {
       console.error('寫入檔案失敗:', err)
-      alert('儲存失敗，請檢查檔案權限')
     }
   }
 
@@ -120,7 +114,6 @@ export function useFile() {
   async function closeFile() {
     await clearHandle()
     fileHandle.value = null
-    isFileLoaded.value = false
     diaryStore.loadFromJson({ diaries: [], annals: [] })
     mainStore.isSettings = false
   }
@@ -139,7 +132,7 @@ export function useFile() {
     watch(
       [diaries, annals],
       debounce(() => {
-        if (!isFileLoaded.value) return
+        if (!fileHandle.value) return
         saveFile()
       }, 1000),
       { deep: true },
@@ -149,7 +142,6 @@ export function useFile() {
   return {
     fileHandle,
     fileInfo,
-    isFileLoaded,
     loadFile,
     createFile,
     saveFile,

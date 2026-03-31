@@ -23,12 +23,9 @@ declare module 'vue' {
     ModalAnnals: typeof import('./src/components/ModalAnnals.vue')['default']
     ModalDiary: typeof import('./src/components/ModalDiary.vue')['default']
     ModalSettings: typeof import('./src/components/ModalSettings.vue')['default']
-    ModalYear: typeof import('./src/components/ModalYear.vue')['default']
-    ModelSettings: typeof import('./src/components/ModelSettings.vue')['default']
     Month: typeof import('./src/components/Month.vue')['default']
     MonthPicker: typeof import('./src/components/MonthPicker.vue')['default']
     Search: typeof import('./src/components/Search.vue')['default']
-    Settings: typeof import('./src/components/Settings.vue')['default']
     Tabs: typeof import('./src/components/Tabs.vue')['default']
     Year: typeof import('./src/components/Year.vue')['default']
   }
