@@ -1,5 +1,5 @@
 <template>
-  <div v-if="annals.length" class="grid grid-cols-4 gap-8 p-8 bg-taupe-100 dark:bg-taupe-900">
+  <div v-if="annals.length" class="grid grid-cols-5 gap-8 p-8 bg-taupe-100 dark:bg-taupe-900">
     <div
       v-for="item in sortAnnals"
       :key="item.year"
@@ -7,7 +7,7 @@
       @click="diaryStore.handleEditAnnals(item.year)"
     >
       <header class="text-5xl text-black/20 dark:text-white/30 mb-6">{{ item.year }}</header>
-      <div class="flex-1 transition overflow-hidden min-h-50 max-h-100 whitespace-pre-wrap break-all">
+      <div class="flex-1 transition overflow-hidden max-h-32 whitespace-pre-wrap break-all">
         {{ item.content }}
       </div>
     </div>

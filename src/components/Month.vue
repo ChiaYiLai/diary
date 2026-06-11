@@ -1,5 +1,7 @@
 <template>
-  <div class="bg-taupe-100 dark:bg-taupe-800 border-taupe-300 dark:border-taupe-600 text-black/60 dark:text-white/70 border-t">
+  <div
+    class="bg-taupe-100 dark:bg-taupe-800 border-taupe-300 dark:border-taupe-600 text-black/60 dark:text-white/70 border-t border-l max-w-[1800px] mx-auto my-8 rounded-xl overflow-hidden"
+  >
     <div class="bg-taupe-100 dark:bg-taupe-900 grid grid-cols-7">
       <div v-for="day in weekDays" :key="day" class="py-1 text-center text-sm border-b border-r border-taupe-300 dark:border-taupe-600">
         {{ day }}
@@ -21,7 +23,7 @@
           >
             {{ item.dateNum }}
           </h6>
-          <p class="line-clamp-6 text-lg">{{ item.diary }}</p>
+          <p class="line-clamp-6 tracking-wide">{{ item.diary }}</p>
         </div>
       </div>
     </div>
@@ -74,7 +76,8 @@ const calendarDays = computed(() => {
   }
 
   // 下個月
-  const remainingSlots = 42 - days.length
+  const totalSlots = Math.ceil((lastMonthDays + daysInMonth) / 7) * 7
+  const remainingSlots = totalSlots - days.length
   const nextMonthStart = endOfMonth.add(1, 'day')
   for (let i = 0; i < remainingSlots; i++) {
     const date = nextMonthStart.add(i, 'day')

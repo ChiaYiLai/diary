@@ -1,6 +1,6 @@
 <template>
   <header
-    class="bg-taupe-50 dark:bg-taupe-950 relative flex gap-4 items-center justify-between pl-2 pr-4 py-2 z-9 text-taupe-500 dark:text-taupe-400"
+    class="bg-black/20 sticky top-0 left-0 w-full flex gap-4 items-center justify-between pl-2 pr-4 py-2 z-9 text-taupe-500 dark:text-taupe-400"
   >
     <div class="flex items-center">
       <Btn v="none" size="icon">

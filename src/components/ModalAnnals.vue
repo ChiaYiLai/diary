@@ -4,7 +4,7 @@
       <div class="flex-1">
         <DateControl class="mb-2" @prev="changeAnnals(-1)" @next="changeAnnals(1)" :heading="currentAnnals" />
         <textarea
-          class="p-6 text-xl/8 h-150 w-full border bg-taupe-200 dark:bg-taupe-700 border-black/10 dark:border-white/15 text-black/70 dark:text-white/70 outline-0 rounded-lg mb-3"
+          class="p-6 text-xl/8 h-200 w-full border bg-taupe-200 dark:bg-taupe-700 border-black/10 dark:border-white/15 text-black/70 dark:text-white/70 outline-0 rounded-lg mb-3"
           :placeholder="t('writeAnnalsHere')"
           v-model="annalsContent"
         ></textarea>

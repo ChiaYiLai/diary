@@ -6,8 +6,7 @@
 
     <div
       v-if="isOpen"
-      class="absolute z-99 top-full left-1/2 -translate-x-1/2 mt-1 bg-white rounded-xl shadow-lg p-4 w-80 border"
-      :class="`border-taupe-300`"
+      class="absolute z-99 top-full left-1/2 -translate-x-1/2 mt-1 bg-white dark:bg-black rounded-xl shadow-lg p-4 w-80 border border-black/10 dark:border-white/20"
       @click.stop
     >
       <DateControl @prev="changeYear(-1)" @next="changeYear(1)" :heading="String(year)" />
